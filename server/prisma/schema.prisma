@@ -1,11 +1,61 @@
-// TODO(module-2): see docs/MODULES.md
-// Datasource and generator only. Gemini will add the full schema in module 2.
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+enum Role {
+  PATIENT
+  DOCTOR
+}
+
+enum Slot {
+  MORNING_FASTING
+  AFTER_BREAKFAST
+  AFTER_LUNCH
+  AFTER_DINNER
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(PATIENT)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  readings     Reading[]
+  doctorLinks  DoctorPatient[] @relation("DoctorLinks")
+  patientLinks DoctorPatient[] @relation("PatientLinks")
+}
+
+model Reading {
+  id          String   @id @default(uuid())
+  userId      String
+  readingDate DateTime @db.Date
+  slot        Slot
+  value       Int
+  notes       String?  @db.VarChar(500)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, readingDate, slot])
+  @@index([userId, readingDate])
+}
+
+model DoctorPatient {
+  doctorId  String
+  patientId String
+
+  doctor  User @relation("DoctorLinks", fields: [doctorId], references: [id], onDelete: Cascade)
+  patient User @relation("PatientLinks", fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@id([doctorId, patientId])
+  @@index([patientId])
 }

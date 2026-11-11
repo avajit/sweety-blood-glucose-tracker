@@ -23,7 +23,7 @@ export default [
       // Require .js extension on relative imports
       'import/extensions': ['error', 'ignorePackages', { js: 'always', jsx: 'never' }],
 
-      // Enforce architectural boundaries
+      // Enforce architectural boundaries globally
       'no-restricted-imports': [
         'error',
         {
@@ -38,13 +38,13 @@ export default [
               group: ['**/**.service*'],
               message: 'Repositories may not import services.',
             },
-            // @prisma/client allowed only in specific files
+            // @prisma/client allowed ONLY in specific files (overridden below)
             {
               group: ['@prisma/client'],
               message:
                 '@prisma/client may only be imported by *.repository.js, prisma/seed.js, src/lib/prisma.js, src/common/errors/prismaErrorMapper.js, and server/tests/ files.',
             },
-            // ioredis allowed only in src/lib/redis.js
+            // ioredis allowed ONLY in src/lib/redis.js (overridden below)
             {
               group: ['ioredis'],
               message: 'ioredis may only be imported by src/lib/redis.js.',
@@ -53,6 +53,58 @@ export default [
             {
               group: ['../*/components/*', '../*/hooks/*', '../*/pages/*', '../*/context/*'],
               message: "Import from the feature's index.js only.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  // Allow @prisma/client in designated files per architecture
+  {
+    files: [
+      '**/*.repository.js',
+      '**/prisma/seed.js',
+      '**/src/lib/prisma.js',
+      '**/src/common/errors/prismaErrorMapper.js',
+      '**/server/tests/**/*',
+    ],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/**.repository*'],
+              message: 'Controllers may not import repositories directly.',
+            },
+            {
+              group: ['**/**.service*'],
+              message: 'Repositories may not import services.',
+            },
+            {
+              group: ['ioredis'],
+              message: 'ioredis may only be imported by src/lib/redis.js.',
+            },
+            {
+              group: ['../*/components/*', '../*/hooks/*', '../*/pages/*', '../*/context/*'],
+              message: "Import from the feature's index.js only.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  // Allow ioredis in src/lib/redis.js
+  {
+    files: ['**/src/lib/redis.js', '**/server/tests/setup/test-redis.js'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@prisma/client'],
+              message: '@prisma/client is not allowed in redis files.',
             },
           ],
         },
