@@ -1,0 +1,38 @@
+{
+  "name": "sweety",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.9"
+  },
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "scripts": {
+    "dev:server": "npm run dev --workspace=server",
+    "dev:client": "npm run dev --workspace=client",
+    "dev:worker": "npm run dev:worker --workspace=server",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "db:migrate": "dotenv -e .env -- npm run db:migrate --workspace=server",
+    "db:seed": "dotenv -e .env -- npm run db:seed --workspace=server",
+    "db:studio": "dotenv -e .env -- npm run db:studio --workspace=server",
+    "prepare": "node scripts/prepare.js"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
+    "@eslint/js": "^9.14.0",
+    "dotenv-cli": "^7.4.2",
+    "eslint": "^9.14.0",
+    "eslint-plugin-import": "^2.31.0",
+    "globals": "^15.11.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3"
+  }
+}

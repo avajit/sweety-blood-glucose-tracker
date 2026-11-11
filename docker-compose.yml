@@ -1,0 +1,4 @@
+# docker-compose.yml
+# TODO(module-9): Fill in Docker Compose configuration.
+# This file is intentionally left as a comment placeholder.
+# Module 9 will define services: postgres, redis, server, worker, client/nginx.
