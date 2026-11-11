@@ -1,0 +1,15 @@
+/**
+ * Standard machine-readable error codes shared across API and client.
+ */
+export const ERROR_CODES = Object.freeze({
+  VALIDATION_ERROR: 'VALIDATION_ERROR',
+  DAILY_LIMIT: 'DAILY_LIMIT',
+  CONFLICT: 'CONFLICT',
+  FUTURE_DATE: 'FUTURE_DATE',
+  UNAUTHORIZED: 'UNAUTHORIZED',
+  FORBIDDEN: 'FORBIDDEN',
+  NOT_FOUND: 'NOT_FOUND',
+  RATE_LIMITED: 'RATE_LIMITED',
+  INTERNAL_ERROR: 'INTERNAL_ERROR',
+});
+
