@@ -1,0 +1,11 @@
+// TODO(module-2): see docs/MODULES.md
+// Datasource and generator only. Gemini will add the full schema in module 2.
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
