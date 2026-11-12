@@ -37,3 +37,21 @@ export function renderWithProviders(ui, { initialEntries = ['/'], queryClient: c
     queryClient,
   };
 }
+
+/**
+ * Creates an isolated QueryClient and React wrapper for testing custom hooks.
+ */
+export function createTestQueryClientWrapper() {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false, gcTime: 0 },
+      mutations: { retry: false },
+    },
+  });
+
+  const wrapper = ({ children }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+
+  return { queryClient, wrapper };
+}

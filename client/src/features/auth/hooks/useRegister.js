@@ -1,1 +1,12 @@
-// TODO(module-8): see docs/MODULES.md
+import { useAuth } from '../context/AuthContext.jsx';
+
+/**
+ * Hook exposing register action and state.
+ */
+export function useRegister() {
+  const { register, isRegistering } = useAuth();
+  return {
+    register,
+    isRegistering,
+  };
+}

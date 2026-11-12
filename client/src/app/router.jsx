@@ -16,6 +16,7 @@ const PageFallback = () => (
 // Feature Pages
 const LoginPage = React.lazy(() => import('../features/auth/pages/LoginPage.jsx'));
 const RegisterPage = React.lazy(() => import('../features/auth/pages/RegisterPage.jsx'));
+const DashboardPage = React.lazy(() => import('../features/readings/pages/DashboardPage.jsx'));
 const ReadingsPage = React.lazy(() => import('../features/readings/pages/ReadingsPage.jsx'));
 const ReportsPage = React.lazy(() => import('../features/reports/pages/ReportsPage.jsx'));
 const PatientsPage = React.lazy(() => import('../features/doctor/pages/PatientsPage.jsx'));
@@ -54,7 +55,7 @@ export const router = createBrowserRouter([
         path: 'dashboard',
         element: (
           <Suspense fallback={<PageFallback />}>
-            <ReadingsPage />
+            <DashboardPage />
           </Suspense>
         ),
       },
