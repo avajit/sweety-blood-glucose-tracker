@@ -19,3 +19,4 @@ export async function sendTestPush() {
   const { data } = await httpClient.post('/notifications/test', {});
   return data.data;
 }
+

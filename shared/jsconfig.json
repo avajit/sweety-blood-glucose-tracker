@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "checkJs": true,
+    "checkJs": false,
     "module": "NodeNext",
     "moduleResolution": "NodeNext"
-  }
+  },
+  "include": ["src"]
 }

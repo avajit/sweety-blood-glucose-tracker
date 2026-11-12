@@ -11,3 +11,4 @@ notificationRouter.get('/vapid-public-key', notificationController.getVapidPubli
 notificationRouter.post('/subscribe', notificationController.subscribe);
 notificationRouter.post('/unsubscribe', notificationController.unsubscribe);
 notificationRouter.post('/test', notificationController.sendTest);
+
