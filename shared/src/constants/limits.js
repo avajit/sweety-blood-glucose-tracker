@@ -10,6 +10,12 @@ export const LIMITS = Object.freeze({
   READINGS_PER_DAY_MAX: 4,
   GLUCOSE_UNIT: 'mg/dl',
 
+  // Clinical Correlates (Optional)
+  CARBS_MIN: 0,
+  CARBS_MAX: 300, // grams
+  INSULIN_MIN: 0,
+  INSULIN_MAX: 100, // units
+
   // Pagination defaults and constraints
   PAGE_DEFAULT: 1,
   PAGE_LIMIT_DEFAULT: 20,

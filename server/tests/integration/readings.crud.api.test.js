@@ -49,6 +49,50 @@ describe('Readings CRUD API', () => {
         slot: 'MORNING_FASTING',
         value: 105,
         notes: 'Good sleep',
+        carbsGrams: null,
+        insulinUnits: null,
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+      });
+    });
+
+    it('creates a reading with clinical correlates (carbs and insulin) and returns 201 Created', async () => {
+      vi.spyOn(readingRepository, 'countByUserAndDate').mockResolvedValue(0);
+      vi.spyOn(readingRepository, 'findByUserDateAndSlot').mockResolvedValue(null);
+      const mockRecord = createMockReading({
+        id: 'r-correlates-1',
+        userId: testUserId,
+        date: '2026-11-10',
+        slot: 'AFTER_LUNCH',
+        value: 140,
+        notes: 'Pasta lunch',
+        carbsGrams: 65,
+        insulinUnits: 6.0,
+      });
+      vi.spyOn(readingRepository, 'create').mockResolvedValue(mockRecord);
+
+      const res = await request
+        .post('/api/readings')
+        .set('Cookie', [authCookie])
+        .send({
+          date: '2026-11-10',
+          slot: 'AFTER_LUNCH',
+          value: 140,
+          notes: 'Pasta lunch',
+          carbsGrams: 65,
+          insulinUnits: 6.0,
+        });
+
+      expect(res.status).toBe(201);
+      expect(res.body).toEqual({
+        id: 'r-correlates-1',
+        userId: testUserId,
+        readingDate: '2026-11-10',
+        slot: 'AFTER_LUNCH',
+        value: 140,
+        notes: 'Pasta lunch',
+        carbsGrams: 65,
+        insulinUnits: 6.0,
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
       });

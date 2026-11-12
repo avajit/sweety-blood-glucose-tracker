@@ -18,7 +18,21 @@ export function ReadingRow({ reading, onEdit, onDelete }) {
     <tr className="border-b border-slate-100 hover:bg-slate-50/75 transition-colors">
       <td className="py-3.5 pl-4 pr-3 text-sm sm:pl-6">
         <div className="font-semibold text-slate-900">{formatSlot(reading.slot)}</div>
-        {reading.notes && <div className="text-xs text-slate-500 mt-0.5">{reading.notes}</div>}
+        {(reading.carbsGrams != null || reading.insulinUnits != null || reading.notes) && (
+          <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs">
+            {reading.carbsGrams != null && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200/70 font-medium">
+                🍞 {reading.carbsGrams}g
+              </span>
+            )}
+            {reading.insulinUnits != null && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200/70 font-medium">
+                💉 {reading.insulinUnits}u
+              </span>
+            )}
+            {reading.notes && <span className="text-slate-500">{reading.notes}</span>}
+          </div>
+        )}
       </td>
       <td className="px-3 py-3.5 text-sm text-slate-700 whitespace-nowrap">
         {reading.readingDate}

@@ -25,6 +25,8 @@ export function ReadingForm({ initialData = null, onSuccess, onCancel }) {
   const slotId = useId();
   const dateId = useId();
   const notesId = useId();
+  const carbsId = useId();
+  const insulinId = useId();
 
   const today = todayInTimezone();
 
@@ -40,6 +42,8 @@ export function ReadingForm({ initialData = null, onSuccess, onCancel }) {
       slot: initialData?.slot || SLOT_VALUES[0],
       value: initialData?.value ?? '',
       notes: initialData?.notes || '',
+      carbsGrams: initialData?.carbsGrams ?? '',
+      insulinUnits: initialData?.insulinUnits ?? '',
     },
   });
 
@@ -60,6 +64,14 @@ export function ReadingForm({ initialData = null, onSuccess, onCancel }) {
         slot: data.slot,
         date: data.date,
         notes: data.notes ? data.notes.trim() : null,
+        carbsGrams:
+          data.carbsGrams !== '' && data.carbsGrams !== null && data.carbsGrams !== undefined
+            ? Number(data.carbsGrams)
+            : null,
+        insulinUnits:
+          data.insulinUnits !== '' && data.insulinUnits !== null && data.insulinUnits !== undefined
+            ? Number(data.insulinUnits)
+            : null,
       };
 
       if (isEdit) {
@@ -169,6 +181,54 @@ export function ReadingForm({ initialData = null, onSuccess, onCancel }) {
             {errors.date.message}
           </p>
         )}
+      </div>
+
+      {/* Optional Clinical Correlates: Carbohydrates & Insulin */}
+      <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-3 space-y-3">
+        <span className="block text-xs font-semibold uppercase tracking-wider text-slate-500">
+          Clinical Correlates (Optional)
+        </span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label htmlFor={carbsId} className="block text-xs font-medium text-slate-700 mb-1">
+              Carbohydrates (grams)
+            </label>
+            <Input
+              id={carbsId}
+              type="number"
+              min="0"
+              max="300"
+              placeholder="e.g. 45"
+              error={errors.carbsGrams?.message}
+              {...register('carbsGrams')}
+            />
+            {errors.carbsGrams && (
+              <p className="mt-1 text-xs text-rose-600" role="alert">
+                {errors.carbsGrams.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <label htmlFor={insulinId} className="block text-xs font-medium text-slate-700 mb-1">
+              Rapid Insulin (units)
+            </label>
+            <Input
+              id={insulinId}
+              type="number"
+              step="0.5"
+              min="0"
+              max="100"
+              placeholder="e.g. 4.0"
+              error={errors.insulinUnits?.message}
+              {...register('insulinUnits')}
+            />
+            {errors.insulinUnits && (
+              <p className="mt-1 text-xs text-rose-600" role="alert">
+                {errors.insulinUnits.message}
+              </p>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Notes (Optional) */}

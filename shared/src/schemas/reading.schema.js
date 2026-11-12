@@ -64,6 +64,43 @@ export const slotSchema = z.enum(SLOT_VALUES, {
 });
 
 /**
+ * Optional carbohydrates (grams: 0–300).
+ */
+export const carbsGramsSchema = z.preprocess(
+  (val) => {
+    if (val === undefined) return undefined;
+    if (val === '' || val === null) return null;
+    const num = Number(val);
+    return Number.isNaN(num) ? val : num;
+  },
+  z
+    .number({ invalid_type_error: 'Carbohydrates must be a number.' })
+    .int('Carbohydrates must be a whole number.')
+    .min(LIMITS.CARBS_MIN, 'Carbohydrates cannot be negative.')
+    .max(LIMITS.CARBS_MAX, 'Carbohydrates cannot exceed 300g.')
+    .nullable()
+    .optional(),
+);
+
+/**
+ * Optional rapid-acting insulin (units: 0–100).
+ */
+export const insulinUnitsSchema = z.preprocess(
+  (val) => {
+    if (val === undefined) return undefined;
+    if (val === '' || val === null) return null;
+    const num = Number(val);
+    return Number.isNaN(num) ? val : num;
+  },
+  z
+    .number({ invalid_type_error: 'Insulin units must be a number.' })
+    .min(LIMITS.INSULIN_MIN, 'Insulin units cannot be negative.')
+    .max(LIMITS.INSULIN_MAX, 'Insulin units cannot exceed 100u.')
+    .nullable()
+    .optional(),
+);
+
+/**
  * Factory for create reading schema taking an optional timezone.
  * When timezone is provided, validates that date is not in the future.
  * @param {string} [timezone]
@@ -74,6 +111,9 @@ export function getCreateReadingSchema(timezone) {
       date: readingDateStringSchema,
       slot: slotSchema,
       value: glucoseValueSchema,
+      notes: z.string().max(500).nullable().optional(),
+      carbsGrams: carbsGramsSchema,
+      insulinUnits: insulinUnitsSchema,
     })
     .superRefine((data, ctx) => {
       if (timezone && isFutureDate(data.date, timezone)) {
@@ -93,7 +133,7 @@ export const createReadingSchema = getCreateReadingSchema();
 
 /**
  * Factory for update reading schema taking an optional timezone.
- * Requires at least one field: value, slot, or date.
+ * Requires at least one field to update.
  * @param {string} [timezone]
  */
 export function getUpdateReadingSchema(timezone) {
@@ -102,16 +142,22 @@ export function getUpdateReadingSchema(timezone) {
       date: readingDateStringSchema.optional(),
       slot: slotSchema.optional(),
       value: glucoseValueSchema.optional(),
+      notes: z.string().max(500).nullable().optional(),
+      carbsGrams: carbsGramsSchema,
+      insulinUnits: insulinUnitsSchema,
     })
     .superRefine((data, ctx) => {
       if (
         data.date === undefined &&
         data.slot === undefined &&
-        data.value === undefined
+        data.value === undefined &&
+        data.notes === undefined &&
+        data.carbsGrams === undefined &&
+        data.insulinUnits === undefined
       ) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'At least one field (date, slot, or value) must be provided for update.',
+          message: 'At least one field must be provided for update.',
         });
       }
       if (timezone && data.date && isFutureDate(data.date, timezone)) {

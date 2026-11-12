@@ -39,7 +39,7 @@ export class ReadingService {
    * @param {string} [payload.notes] - Clinical notes
    * @returns {Promise<object>} Formatted reading
    */
-  async createReading(userId, { date, slot, value, notes }) {
+  async createReading(userId, { date, slot, value, notes, carbsGrams, insulinUnits }) {
     // 1. Future Date Rejection (clinical rule)
     if (isFutureDate(date, env.APP_TIMEZONE)) {
       throw new FutureDateError(MESSAGES.DATE_FUTURE);
@@ -66,6 +66,8 @@ export class ReadingService {
         slot,
         value,
         notes,
+        carbsGrams,
+        insulinUnits,
       });
 
       // 5. Invalidate cached reports for this user

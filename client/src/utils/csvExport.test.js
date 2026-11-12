@@ -59,21 +59,25 @@ describe('CSV Export Utility (Phase 1)', () => {
   describe('generateReadingsCsv', () => {
     it('generates headers only when readings array is empty', () => {
       const csv = generateReadingsCsv([]);
-      expect(csv).toBe('Date,Clinical Slot,Glucose Level (mg/dL),ADA Clinical Status,Notes');
+      expect(csv).toBe('Date,Clinical Slot,Glucose Level (mg/dL),ADA Clinical Status,Carbs (g),Insulin (u),Notes');
     });
 
-    it('generates formatted rows with proper slots and clinical labels', () => {
+    it('generates formatted rows with proper slots, correlates and clinical labels', () => {
       const readings = [
         {
           date: '2026-10-15',
           slot: SLOTS.MORNING_FASTING,
           value: 105,
+          carbsGrams: null,
+          insulinUnits: null,
           notes: 'Felt great',
         },
         {
           date: '2026-10-15',
           slot: SLOTS.AFTER_LUNCH,
           value: 195,
+          carbsGrams: 60,
+          insulinUnits: 5.5,
           notes: 'Large meal, with dessert',
         },
       ];
@@ -82,9 +86,9 @@ describe('CSV Export Utility (Phase 1)', () => {
       const lines = csv.split('\r\n');
 
       expect(lines).toHaveLength(3);
-      expect(lines[0]).toBe('Date,Clinical Slot,Glucose Level (mg/dL),ADA Clinical Status,Notes');
-      expect(lines[1]).toBe('2026-10-15,Morning fasting,105,In Target (Normal),Felt great');
-      expect(lines[2]).toBe('2026-10-15,After lunch,195,Elevated,"Large meal, with dessert"');
+      expect(lines[0]).toBe('Date,Clinical Slot,Glucose Level (mg/dL),ADA Clinical Status,Carbs (g),Insulin (u),Notes');
+      expect(lines[1]).toBe('2026-10-15,Morning fasting,105,In Target (Normal),,,Felt great');
+      expect(lines[2]).toBe('2026-10-15,After lunch,195,Elevated,60,5.5,"Large meal, with dessert"');
     });
   });
 

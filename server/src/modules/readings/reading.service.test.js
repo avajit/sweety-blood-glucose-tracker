@@ -53,6 +53,40 @@ describe('ReadingService', () => {
       expect(result.notes).toBe('Lunch salad');
     });
 
+    it('creates and returns a reading with optional carbs and insulin', async () => {
+      mockRepo.countByUserAndDate.mockResolvedValue(1);
+      mockRepo.findByUserDateAndSlot.mockResolvedValue(null);
+      const mockRecord = createMockReading({
+        userId: 'user-1',
+        date: '2026-11-10',
+        slot: 'AFTER_LUNCH',
+        value: 145,
+        carbsGrams: 50,
+        insulinUnits: 5.0,
+      });
+      mockRepo.create.mockResolvedValue(mockRecord);
+
+      const result = await service.createReading('user-1', {
+        date: '2026-11-10',
+        slot: 'AFTER_LUNCH',
+        value: 145,
+        carbsGrams: 50,
+        insulinUnits: 5.0,
+      });
+
+      expect(mockRepo.create).toHaveBeenCalledWith({
+        userId: 'user-1',
+        date: '2026-11-10',
+        slot: 'AFTER_LUNCH',
+        value: 145,
+        notes: undefined,
+        carbsGrams: 50,
+        insulinUnits: 5.0,
+      });
+      expect(result.carbsGrams).toBe(50);
+      expect(result.insulinUnits).toBe(5.0);
+    });
+
     it('throws FutureDateError when the reading date is in the future', async () => {
       await expect(
         service.createReading('user-1', {

@@ -30,16 +30,26 @@ export function escapeCsvCell(value) {
 
 /**
  * Generates CSV string from readings array.
- * @param {Array<{ date: string, slot: string, value: number, notes?: string }>} readings
+ * @param {Array<{ date: string, slot: string, value: number, carbsGrams?: number, insulinUnits?: number, notes?: string }>} readings
  * @returns {string}
  */
 export function generateReadingsCsv(readings = []) {
-  const headers = ['Date', 'Clinical Slot', 'Glucose Level (mg/dL)', 'ADA Clinical Status', 'Notes'];
+  const headers = [
+    'Date',
+    'Clinical Slot',
+    'Glucose Level (mg/dL)',
+    'ADA Clinical Status',
+    'Carbs (g)',
+    'Insulin (u)',
+    'Notes',
+  ];
   const rows = readings.map((r) => [
     escapeCsvCell(r.date),
     escapeCsvCell(formatSlot(r.slot)),
     escapeCsvCell(r.value),
     escapeCsvCell(getClinicalStatusLabel(r.value)),
+    escapeCsvCell(r.carbsGrams != null ? r.carbsGrams : ''),
+    escapeCsvCell(r.insulinUnits != null ? r.insulinUnits : ''),
     escapeCsvCell(r.notes || ''),
   ]);
 

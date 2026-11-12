@@ -21,6 +21,8 @@ export function toReadingResponse(reading) {
     slot: reading.slot,
     value: reading.value,
     notes: reading.notes ?? null,
+    carbsGrams: reading.carbsGrams ?? null,
+    insulinUnits: reading.insulinUnits ?? null,
     createdAt: reading.createdAt instanceof Date ? reading.createdAt.toISOString() : reading.createdAt,
     updatedAt: reading.updatedAt instanceof Date ? reading.updatedAt.toISOString() : reading.updatedAt,
   };

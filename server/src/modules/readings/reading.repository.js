@@ -70,7 +70,7 @@ export class ReadingRepository {
    * @param {string} [params.notes]
    * @returns {Promise<object>}
    */
-  async create({ userId, date, slot, value, notes }) {
+  async create({ userId, date, slot, value, notes, carbsGrams, insulinUnits }) {
     const readingDate = parseDateUtc(date);
     return this.prisma.reading.create({
       data: {
@@ -79,6 +79,8 @@ export class ReadingRepository {
         slot,
         value,
         notes: notes || null,
+        carbsGrams: carbsGrams ?? null,
+        insulinUnits: insulinUnits ?? null,
       },
     });
   }

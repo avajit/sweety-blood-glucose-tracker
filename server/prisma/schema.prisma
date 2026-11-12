@@ -40,6 +40,8 @@ model Reading {
   slot        Slot
   value       Int
   notes       String?  @db.VarChar(500)
+  carbsGrams   Int?     @map("carbs_grams")
+  insulinUnits Float?   @map("insulin_units")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

@@ -15,8 +15,46 @@ describe('ReadingForm with MSW 2 (Module 10)', () => {
     expect(screen.getByLabelText(/blood glucose/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/meal \/ clinical slot/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/reading date/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/carbohydrates/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/rapid insulin/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/notes/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /save reading/i })).toBeInTheDocument();
+  });
+
+  it('submits optional carbohydrates and rapid insulin with the payload', async () => {
+    let capturedBody = null;
+    server.use(
+      http.post('*/api/readings', async ({ request }) => {
+        capturedBody = await request.json();
+        return HttpResponse.json(
+          {
+            data: {
+              id: 'reading-correlates-msw',
+              ...capturedBody,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            },
+          },
+          { status: 201 },
+        );
+      }),
+    );
+
+    const user = userEvent.setup();
+    renderWithProviders(<ReadingForm />);
+
+    await user.type(screen.getByLabelText(/blood glucose/i), '140');
+    await user.type(screen.getByLabelText(/carbohydrates/i), '55');
+    await user.type(screen.getByLabelText(/rapid insulin/i), '4.5');
+
+    await user.click(screen.getByRole('button', { name: /save reading/i }));
+
+    await waitFor(() => {
+      expect(capturedBody).not.toBeNull();
+      expect(capturedBody.value).toBe(140);
+      expect(capturedBody.carbsGrams).toBe(55);
+      expect(capturedBody.insulinUnits).toBe(4.5);
+    });
   });
 
   it('submitting an out-of-range value shows an inline error without calling API', async () => {

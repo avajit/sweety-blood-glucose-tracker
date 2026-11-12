@@ -111,6 +111,10 @@ Sweety strictly adheres to the **American Diabetes Association (ADA) Standards o
 
 ## Key Features
 
+- **Clinical Correlates (Carbohydrates & Rapid Insulin):** Patients can optionally log meal carbohydrate intake (0–300g) and rapid-acting bolus insulin units (0–100u) alongside glucose readings, providing endocrinologists with vital insulin-to-carb ratio context.
+- **ADA Rule of 15 Hypoglycemia Emergency Protocol:** Immediate interactive modal alert triggering for readings < 70 mg/dL, complete with clinical carb treatment instructions and a live 15-minute retest countdown timer.
+- **One-Click Clinical CSV Export:** Instant RFC 4180-compliant CSV export from both Readings and Reports pages with full clinical slot names, ADA classification labels, carbs, insulin, and notes.
+- **Enterprise Refresh Token Rotation:** Silent token refresh with cryptographic family rotation, reuse theft detection, and automatic client interceptor retry.
 - **Strict Meal Slot & Daily Limit Concurrency:** High-concurrency database transactions (`SERIALIZABLE` isolation / transactional check constraints) prevent race conditions when logging readings.
 - **Dynamic Glycemic Reports:**
   - **Daily Report:** Meal slot distribution, count, mean, min, and max for any selected date.
@@ -382,9 +386,12 @@ Dates are stored and parsed as pure `YYYY-MM-DD` strings. "Today" calculations a
 3. **Validation Precedence:** If a user has 4 readings logged for a day, the 4-per-day quota error takes precedence over the duplicate slot error.
 
 ### Future Roadmap:
-- [ ] Export clinical reports to PDF and structured CSV for physician consultations.
+- [x] Export clinical reports to structured CSV for physician consultations.
+- [x] Carbohydrate intake (grams) and insulin dosage (units) logging to correlate insulin sensitivity ratios.
+- [x] ADA Rule of 15 hypoglycemia emergency protocol modal with built-in retest timer.
+- [x] Enterprise Refresh Token Rotation with replay theft detection and Axios retry.
 - [ ] Direct Bluetooth / NFC integration with Continuous Glucose Monitors (Dexcom, FreeStyle Libre).
-- [ ] Carbohydrate intake (grams) and insulin dosage (units) logging to correlate insulin sensitivity ratios.
+- [ ] Export clinical summary sheets to printable PDF.
 - [ ] Real-time push notifications via Web Push API for missed readings.
 
 ---

@@ -100,6 +100,68 @@ describe('reading.schema.js', () => {
       };
       expect(() => schema.parse(payload)).toThrowError(MESSAGES.DATE_FUTURE);
     });
+
+    it('accepts valid optional carbohydrates and rapid insulin', () => {
+      const payload = {
+        date: '2026-11-10',
+        slot: 'AFTER_LUNCH',
+        value: 130,
+        carbsGrams: 45,
+        insulinUnits: 5.5,
+      };
+      const parsed = createReadingSchema.parse(payload);
+      expect(parsed.carbsGrams).toBe(45);
+      expect(parsed.insulinUnits).toBe(5.5);
+    });
+
+    it('rejects carbohydrates outside bounds (0-300) or non-integer', () => {
+      expect(() =>
+        createReadingSchema.parse({
+          date: '2026-11-10',
+          slot: 'AFTER_LUNCH',
+          value: 130,
+          carbsGrams: 301,
+        }),
+      ).toThrowError('Carbohydrates cannot exceed 300g.');
+
+      expect(() =>
+        createReadingSchema.parse({
+          date: '2026-11-10',
+          slot: 'AFTER_LUNCH',
+          value: 130,
+          carbsGrams: -1,
+        }),
+      ).toThrowError('Carbohydrates cannot be negative.');
+
+      expect(() =>
+        createReadingSchema.parse({
+          date: '2026-11-10',
+          slot: 'AFTER_LUNCH',
+          value: 130,
+          carbsGrams: 45.5,
+        }),
+      ).toThrowError('Carbohydrates must be a whole number.');
+    });
+
+    it('rejects insulin units outside bounds (0-100)', () => {
+      expect(() =>
+        createReadingSchema.parse({
+          date: '2026-11-10',
+          slot: 'AFTER_LUNCH',
+          value: 130,
+          insulinUnits: 101,
+        }),
+      ).toThrowError('Insulin units cannot exceed 100u.');
+
+      expect(() =>
+        createReadingSchema.parse({
+          date: '2026-11-10',
+          slot: 'AFTER_LUNCH',
+          value: 130,
+          insulinUnits: -0.5,
+        }),
+      ).toThrowError('Insulin units cannot be negative.');
+    });
   });
 
   describe('updateReadingSchema', () => {

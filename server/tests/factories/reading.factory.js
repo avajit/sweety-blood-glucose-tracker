@@ -15,6 +15,8 @@ export function createMockReading(overrides = {}) {
     slot: overrides.slot || 'MORNING_FASTING',
     value: overrides.value ?? 110,
     notes: overrides.notes ?? null,
+    carbsGrams: overrides.carbsGrams ?? null,
+    insulinUnits: overrides.insulinUnits ?? null,
     createdAt: overrides.createdAt || new Date('2026-11-10T08:00:00.000Z'),
     updatedAt: overrides.updatedAt || new Date('2026-11-10T08:00:00.000Z'),
   };
