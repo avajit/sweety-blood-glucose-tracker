@@ -2,7 +2,10 @@
   "name": "@sweety/shared",
   "version": "1.0.0",
   "type": "module",
-  "exports": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./*": "./src/*"
+  },
   "scripts": {
     "test": "vitest run"
   },

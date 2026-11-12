@@ -1,1 +1,6 @@
-// TODO(module-3): see docs/MODULES.md
+/**
+ * Cookie identifier names used across the application.
+ */
+export const COOKIE_NAMES = Object.freeze({
+  AUTH_TOKEN: 'token',
+});

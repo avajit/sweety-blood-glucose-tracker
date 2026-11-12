@@ -67,6 +67,7 @@ export default [
       '**/src/lib/prisma.js',
       '**/src/common/errors/prismaErrorMapper.js',
       '**/server/tests/**/*',
+      '**/*.test.js',
     ],
     rules: {
       'no-restricted-imports': [
