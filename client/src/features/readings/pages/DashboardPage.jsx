@@ -8,6 +8,7 @@ import { useReadings } from '../hooks/useReadings.js';
 import { ReadingForm } from '../components/ReadingForm.jsx';
 import { DeleteReadingDialog } from '../components/DeleteReadingDialog.jsx';
 import { HypoglycemiaAlertModal } from '../components/HypoglycemiaAlertModal.jsx';
+import { PushNotificationCard } from '../../notifications/components/PushNotificationCard.jsx';
 import { ReadingsTable } from '../components/ReadingsTable.jsx';
 import { formatSlot, formatGlucose } from '../../../lib/format.js';
 import { Button } from '../../../components/ui/Button.jsx';
@@ -157,6 +158,9 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Browser Push Reminder Card */}
+      <PushNotificationCard />
 
       {/* 4 Clinical Slots Today */}
       <div>

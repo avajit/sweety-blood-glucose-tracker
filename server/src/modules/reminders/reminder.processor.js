@@ -4,6 +4,7 @@ import { todayInTimezone } from '@sweety/shared/utils/date.js';
 import { prisma as defaultPrisma } from '../../lib/prisma.js';
 import { logger } from '../../lib/logger.js';
 import { env } from '../../config/env.js';
+import { pushService } from '../notifications/push.service.js';
 
 /**
  * Default notifier implementation (console logger / email stub).
@@ -23,6 +24,16 @@ export const defaultNotifier = {
       { patientId, email, count, remaining, date },
       `[REMINDER NOTIFICATION] Dear ${name}, you have logged ${count}/4 blood glucose readings for ${date}. Please remember to log your remaining ${remaining} reading(s) today.`,
     );
+
+    try {
+      await pushService.sendToUser(patientId, {
+        title: '🔔 Sweety Daily Reminder',
+        body: `Dear ${name}, you have logged ${count}/4 readings for ${date}. Please remember to log your remaining ${remaining} reading(s) today!`,
+        url: '/dashboard',
+      });
+    } catch (err) {
+      logger.warn({ err: err.message }, 'Failed to dispatch push notification in reminder job');
+    }
   },
 };
 

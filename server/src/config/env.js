@@ -14,6 +14,15 @@ const envSchema = z.object({
   ALLOW_DEMO_SEED: z.enum(['true', 'false']).default('false'),
   REDIS_URL: z.string().optional(),
   REMINDER_CRON: z.string().default('0 8 * * *'),
+  VAPID_PUBLIC_KEY: z
+    .string()
+    .default(
+      'BMnPHCFdtK8dUvUR7WAQ8X-8X0pDaptqm6Xzjemno4-_OHiUYJ9Xn8ZKvfgL1luo19kqTDo5K8dYo-nTa_Umrrk',
+    ),
+  VAPID_PRIVATE_KEY: z
+    .string()
+    .default('99QKx_W57LDFfqqyHk_HVPD8U9Dqf6PhJ7Zikv1qVUk'),
+  VAPID_SUBJECT: z.string().default('mailto:support@sweety.local'),
 });
 
 const parsed = envSchema.safeParse(process.env);
