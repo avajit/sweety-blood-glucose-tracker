@@ -12,6 +12,7 @@ import {
 import { env } from '../../config/env.js';
 import { readingRepository as defaultReadingRepo } from './reading.repository.js';
 import { toReadingResponse } from './reading.mapper.js';
+import { cacheService as defaultCacheService } from '../cache/cache.service.js';
 
 /**
  * Service encapsulating business logic, concurrency control, and ownership guards for Readings.
@@ -19,13 +20,16 @@ import { toReadingResponse } from './reading.mapper.js';
 export class ReadingService {
   /**
    * @param {import('./reading.repository.js').ReadingRepository} [readingRepo]
+   * @param {import('../cache/cache.service.js').CacheService} [cacheService]
    */
-  constructor(readingRepo = defaultReadingRepo) {
+  constructor(readingRepo = defaultReadingRepo, cacheService = defaultCacheService) {
     this.readingRepo = readingRepo;
+    this.cacheService = cacheService;
   }
 
   /**
    * Records a new blood glucose reading with strict clinical and concurrency validation.
+   * Invalidates cached reports for the patient upon successful insert.
    *
    * @param {string} userId - Authenticated patient ID
    * @param {object} payload
@@ -63,6 +67,10 @@ export class ReadingService {
         value,
         notes,
       });
+
+      // 5. Invalidate cached reports for this user
+      await this.cacheService.invalidateUserReports(userId);
+
       return toReadingResponse(reading);
     } catch (err) {
       // Handle concurrent insert race condition (P2002 Unique constraint)
@@ -113,6 +121,7 @@ export class ReadingService {
 
   /**
    * Updates an existing reading with ownership enforcement.
+   * Invalidates cached reports for the patient upon successful update.
    *
    * @param {string} userId
    * @param {string} readingId
@@ -135,11 +144,16 @@ export class ReadingService {
     }
 
     const updated = await this.readingRepo.update(readingId, payload);
+
+    // Invalidate cached reports for this user
+    await this.cacheService.invalidateUserReports(userId);
+
     return toReadingResponse(updated);
   }
 
   /**
    * Deletes a reading with ownership enforcement.
+   * Invalidates cached reports for the patient upon successful deletion.
    *
    * @param {string} userId
    * @param {string} readingId
@@ -157,6 +171,9 @@ export class ReadingService {
     }
 
     await this.readingRepo.delete(readingId);
+
+    // Invalidate cached reports for this user
+    await this.cacheService.invalidateUserReports(userId);
   }
 }
 

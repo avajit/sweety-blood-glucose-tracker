@@ -5,7 +5,7 @@ import { logger } from './logger.js';
 let redisClient = null;
 let isConnected = false;
 
-if (env.REDIS_URL) {
+if (env.REDIS_URL && env.REDIS_URL.trim() !== '') {
   try {
     redisClient = new Redis(env.REDIS_URL, {
       maxRetriesPerRequest: 1,
@@ -50,7 +50,7 @@ if (env.REDIS_URL) {
  * @returns {boolean}
  */
 export function isRedisAvailable() {
-  return isConnected && redisClient !== null && redisClient.status === 'ready';
+  return isConnected && redisClient !== null && (redisClient.status === 'ready' || redisClient.status === 'connect');
 }
 
 /**
@@ -59,6 +59,15 @@ export function isRedisAvailable() {
  */
 export function getRedisClient() {
   return redisClient;
+}
+
+/**
+ * Allows injecting or clearing the Redis client instance for tests.
+ * @param {Redis | null} client
+ */
+export function setRedisClient(client) {
+  redisClient = client;
+  isConnected = client !== null;
 }
 
 export const redis = redisClient;

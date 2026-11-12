@@ -5,6 +5,7 @@ import { FutureDateError, ForbiddenError } from '../../common/errors/httpErrors.
 import { env } from '../../config/env.js';
 import { reportRepository as defaultReportRepo } from './report.repository.js';
 import { toReportResponse } from './report.mapper.js';
+import { cacheService as defaultCacheService } from '../cache/cache.service.js';
 
 /**
  * Service orchestrating glucose reports calculation, clinical access rules, and aggregations.
@@ -12,13 +13,16 @@ import { toReportResponse } from './report.mapper.js';
 export class ReportService {
   /**
    * @param {import('./report.repository.js').ReportRepository} [reportRepo]
+   * @param {import('../cache/cache.service.js').CacheService} [cacheService]
    */
-  constructor(reportRepo = defaultReportRepo) {
+  constructor(reportRepo = defaultReportRepo, cacheService = defaultCacheService) {
     this.reportRepo = reportRepo;
+    this.cacheService = cacheService;
   }
 
   /**
    * Generates a clinical glucose report for the specified type and date.
+   * Checks Redis cache prior to database execution; caches result on miss.
    *
    * @param {object} requestingUser - Authenticated user context (req.user)
    * @param {string} requestingUser.id
@@ -55,10 +59,17 @@ export class ReportService {
       }
     }
 
-    // 3. Calculate Date Range
+    // 3. Cache layer check: report:{userId}:{type}:{date}
+    const cacheKey = `report:${targetUserId}:${type}:${referenceDate}`;
+    const cached = await this.cacheService.get(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
+    // 4. Calculate Date Range
     const range = getReportDateRange(type, referenceDate);
 
-    // 4. Query PostgreSQL database aggregations and readings
+    // 5. Query PostgreSQL database aggregations and readings
     const { stats, readings } = await this.reportRepo.getReportData(targetUserId, range.from, range.to);
 
     const count = stats._count?.id || 0;
@@ -66,8 +77,8 @@ export class ReportService {
     const lowest = count > 0 && stats._min?.value !== null ? stats._min.value : null;
     const average = count > 0 && stats._avg?.value !== null ? Math.round(stats._avg.value) : null;
 
-    // 5. Format standardized clinical response
-    return toReportResponse({
+    // 6. Format standardized clinical response
+    const response = toReportResponse({
       type,
       range,
       count,
@@ -76,6 +87,11 @@ export class ReportService {
       average,
       readings,
     });
+
+    // 7. Store in cache (60s TTL)
+    await this.cacheService.set(cacheKey, response, 60);
+
+    return response;
   }
 }
 
