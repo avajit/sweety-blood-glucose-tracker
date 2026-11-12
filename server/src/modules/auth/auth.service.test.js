@@ -22,6 +22,8 @@ describe('AuthService', () => {
     };
     mockTokenService = {
       signToken: vi.fn().mockReturnValue('mock_jwt_token_xyz'),
+      signAccessToken: vi.fn().mockReturnValue('mock_jwt_token_xyz'),
+      signRefreshToken: vi.fn().mockReturnValue({ token: 'mock_refresh_token_xyz', jti: 'jti-123' }),
       verifyToken: vi.fn(),
     };
 

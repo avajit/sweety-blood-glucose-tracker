@@ -9,5 +9,6 @@ export const authRouter = Router();
 
 authRouter.post('/register', authRateLimiter, validate(registerSchema, 'body'), authController.register);
 authRouter.post('/login', authRateLimiter, validate(loginSchema, 'body'), authController.login);
+authRouter.post('/refresh', authRateLimiter, authController.refresh);
 authRouter.post('/logout', authController.logout);
 authRouter.get('/me', authenticate, authController.getMe);

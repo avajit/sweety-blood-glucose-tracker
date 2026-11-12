@@ -13,10 +13,55 @@ export const httpClient = axios.create({
   },
 });
 
-// Response interceptor to unwrap error envelopes { error: { code, message, details } }
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve();
+    }
+  });
+  failedQueue = [];
+};
+
+// Response interceptor with automatic Refresh Token Rotation
 httpClient.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+
+    // Check if error is 401, not already retried, and not an auth mutation route
+    const isAuthRoute =
+      originalRequest?.url?.includes('/auth/login') ||
+      originalRequest?.url?.includes('/auth/register') ||
+      originalRequest?.url?.includes('/auth/refresh');
+
+    if (error.response?.status === 401 && originalRequest && !originalRequest._retry && !isAuthRoute) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then(() => httpClient(originalRequest))
+          .catch((err) => Promise.reject(err));
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        await httpClient.post('/auth/refresh');
+        processQueue(null);
+        return httpClient(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
     if (error.response?.data?.error) {
       const { code, message, details } = error.response.data.error;
       return Promise.reject(new ApiError(message, code, error.response.status, details || []));
