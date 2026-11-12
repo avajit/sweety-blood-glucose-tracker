@@ -7,6 +7,7 @@ import { getReadingClinicalAssessment } from '@sweety/shared/utils/clinical.js';
 import { useReadings } from '../hooks/useReadings.js';
 import { ReadingForm } from '../components/ReadingForm.jsx';
 import { DeleteReadingDialog } from '../components/DeleteReadingDialog.jsx';
+import { HypoglycemiaAlertModal } from '../components/HypoglycemiaAlertModal.jsx';
 import { ReadingsTable } from '../components/ReadingsTable.jsx';
 import { formatSlot, formatGlucose } from '../../../lib/format.js';
 import { Button } from '../../../components/ui/Button.jsx';
@@ -19,6 +20,7 @@ export default function DashboardPage() {
   const [activeSlot, setActiveSlot] = useState(null);
   const [editingReading, setEditingReading] = useState(null);
   const [deletingReading, setDeletingReading] = useState(null);
+  const [hypoAlertValue, setHypoAlertValue] = useState(null);
 
   // Fetch today's readings
   const { data, isLoading, refetch } = useReadings({
@@ -56,9 +58,12 @@ export default function DashboardPage() {
     setActiveSlot(null);
   };
 
-  const handleFormSuccess = () => {
+  const handleFormSuccess = (payload) => {
     handleCloseModal();
     refetch();
+    if (payload?.value && payload.value < 70) {
+      setHypoAlertValue(payload.value);
+    }
   };
 
   return (
@@ -288,6 +293,13 @@ export default function DashboardPage() {
         reading={deletingReading}
         isOpen={Boolean(deletingReading)}
         onClose={() => setDeletingReading(null)}
+      />
+
+      {/* Severe Hypoglycemia Emergency Alert Modal */}
+      <HypoglycemiaAlertModal
+        value={hypoAlertValue}
+        isOpen={Boolean(hypoAlertValue)}
+        onClose={() => setHypoAlertValue(null)}
       />
     </div>
   );

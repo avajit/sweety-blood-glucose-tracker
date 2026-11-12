@@ -69,7 +69,7 @@ export function ReadingForm({ initialData = null, onSuccess, onCancel }) {
       }
 
       if (onSuccess) {
-        onSuccess();
+        onSuccess(payload);
       }
     } catch (err) {
       setServerError(err.message || 'Failed to save glucose reading.');
