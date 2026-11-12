@@ -25,6 +25,9 @@ import { NotFoundError } from './common/errors/httpErrors.js';
 export function createApp() {
   const app = express();
 
+  // Trust reverse proxy (Nginx / Docker) to extract true client IP for rate limiting
+  app.set('trust proxy', 1);
+
   // Security headers with Helmet
   app.use(
     helmet({
