@@ -22,6 +22,12 @@ export function getClinicalStatusLabel(value) {
 export function escapeCsvCell(value) {
   if (value === null || value === undefined) return '';
   const str = String(value);
+
+  // Security (CWE-1236): Neutralize spreadsheet formula injection characters
+  if (/^[=+\-@\t\r]/.test(str)) {
+    return `"'${str.replace(/"/g, '""')}"`;
+  }
+
   if (/[",\n\r]/.test(str)) {
     return `"${str.replace(/"/g, '""')}"`;
   }

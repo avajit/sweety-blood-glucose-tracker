@@ -36,7 +36,7 @@ A production-grade, clinical blood glucose monitoring application built for diab
 ## Overview
 
 Managing diabetes requires disciplined, longitudinal glucose logging. Sweety provides a zero-friction, clinically accurate platform designed around patient health outcomes and clinician workflow:
-1. **Patient Portal:** Log daily readings across 4 distinct meal slots (`FASTING`, `POST_BREAKFAST`, `POST_LUNCH`, `POST_DINNER`), filter historical logs, and track glycemic control over custom dates and calendar months.
+1. **Patient Portal:** Log daily readings across 4 distinct meal slots (`MORNING_FASTING`, `AFTER_BREAKFAST`, `AFTER_LUNCH`, `AFTER_DINNER`), filter historical logs, and track glycemic control over custom dates and calendar months.
 2. **Clinical Analytics:** Instant calculations of Mean Glucose, Min/Max values, and readings count, plotted against ADA glycemic target bands in interactive charts.
 3. **Doctor Portal:** Healthcare providers can securely view their linked patient roster and inspect detailed clinical glycemic reports without boundary crossing.
 4. **Resilient Background Automation:** Automated daily reminders via BullMQ workers and high-speed report caching via Redis with automatic invalidation.
@@ -96,10 +96,10 @@ Sweety strictly adheres to the **American Diabetes Association (ADA) Standards o
 
 | Clinical Meal Slot | Recommended Target Range | Clinical Note |
 |---|---|---|
-| `FASTING` | **70 – 130 mg/dL** | Pre-prandial / morning baseline |
-| `POST_BREAKFAST` | **< 180 mg/dL** | 1-2 hours post-meal peak |
-| `POST_LUNCH` | **< 180 mg/dL** | 1-2 hours post-meal peak |
-| `POST_DINNER` | **< 180 mg/dL** | 1-2 hours post-meal peak |
+| `MORNING_FASTING` | **70 – 130 mg/dL** | Pre-prandial / morning baseline |
+| `AFTER_BREAKFAST` | **< 180 mg/dL** | 1-2 hours post-meal peak |
+| `AFTER_LUNCH` | **< 180 mg/dL** | 1-2 hours post-meal peak |
+| `AFTER_DINNER` | **< 180 mg/dL** | 1-2 hours post-meal peak |
 
 - **Hypoglycemia Alert:** `< 70 mg/dL` (Flagged in Amber/Red for urgent intervention)
 - **Normal Range:** `70 – 180 mg/dL` (Post-meal acceptable upper threshold)
@@ -399,4 +399,4 @@ Dates are stored and parsed as pure `YYYY-MM-DD` strings. "Today" calculations a
 
 ## License
 
-This project was built for the **Kenpath Junior Full Stack Developer (JavaScript & AI)** technical assessment.
+MIT License. Designed and developed as a production-grade clinical healthcare platform.
