@@ -1,1 +1,39 @@
-// TODO(module-7): see docs/MODULES.md
+import React from 'react';
+import { render } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MemoryRouter } from 'react-router-dom';
+
+/**
+ * Test utility rendering React components inside isolated QueryClient and MemoryRouter contexts.
+ *
+ * @param {React.ReactElement} ui
+ * @param {object} [options]
+ * @param {string[]} [options.initialEntries] - Initial router paths
+ * @param {QueryClient} [options.queryClient]
+ * @returns {import('@testing-library/react').RenderResult}
+ */
+export function renderWithProviders(ui, { initialEntries = ['/'], queryClient: customClient, ...options } = {}) {
+  const queryClient =
+    customClient ||
+    new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+          gcTime: 0,
+        },
+      },
+    });
+
+  function Wrapper({ children }) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
+      </QueryClientProvider>
+    );
+  }
+
+  return {
+    ...render(ui, { wrapper: Wrapper, ...options }),
+    queryClient,
+  };
+}

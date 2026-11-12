@@ -149,8 +149,23 @@ export default [
         ecmaFeatures: { jsx: true },
       },
     },
+    rules: {
+      'no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^[A-Z_]',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+    },
   },
   {
-    ignores: ['node_modules/', 'dist/', 'coverage/', '*.config.cjs'],
+    ignores: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/coverage/**',
+      '*.config.cjs',
+    ],
   },
 ];

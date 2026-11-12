@@ -1,1 +1,9 @@
-// TODO(module-13): see docs/MODULES.md
+import React from 'react';
+
+export default function PatientReportPage() {
+  return (
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold tracking-tight text-slate-900">Patient Clinical Analytics</h1>
+    </div>
+  );
+}
