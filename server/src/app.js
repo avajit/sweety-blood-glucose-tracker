@@ -11,6 +11,7 @@ import { httpLogger } from './lib/httpLogger.js';
 import { healthRouter } from './modules/health/health.routes.js';
 import { authRouter } from './modules/auth/auth.routes.js';
 import { readingsRouter } from './modules/readings/reading.routes.js';
+import { reportsRouter } from './modules/reports/report.routes.js';
 import { NotFoundError } from './common/errors/httpErrors.js';
 
 /**
@@ -58,6 +59,7 @@ export function createApp() {
   app.use('/api', healthRouter);
   app.use('/api/auth', authRouter);
   app.use('/api/readings', readingsRouter);
+  app.use('/api/reports', reportsRouter);
 
   // 404 Fallback Handler
   app.use((req, _res, next) => {
