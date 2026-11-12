@@ -197,6 +197,12 @@ Modules 0–3.
 - `GET /api/auth/me` without cookie returns `401`.
 - Integration tests run against `TEST_DATABASE_URL` sequentially.
 
+### Future Enterprise Enhancements (Post-MVP Roadmap)
+- **Refresh Token Rotation:** Short-lived access token (15m in memory) + secure HTTP-only refresh token rotated on every use with Redis-backed revocation.
+- **OAuth 2.0 / Google SSO:** One-click biometric and Google/Apple federated authentication.
+- **Two-Factor Authentication (2FA / TOTP):** Time-based one-time passwords via Google Authenticator or SMS OTP for clinical accounts.
+- **Distributed Redis Rate Limiting:** Replace in-memory rate limiting with distributed Redis rate limiting for horizontal multi-pod deployments.
+
 ---
 
 ## Module 5 — Readings (incl. Pagination)
@@ -239,6 +245,11 @@ Modules 0–4.
 - `DELETE` by non-owner returns `403`.
 - Pagination: `total`, `totalPages`, `page`, `limit` are correct on page 2 of a seeded dataset.
 - Empty-state: response with no readings returns `{ data: [], total: 0, totalPages: 0, page: 1, limit: 20 }`.
+
+### Future Enterprise Enhancements (Post-MVP Roadmap)
+- **Meter Out-of-Range Handling ("LO" / "HI" states):** Commercial glucometers display `"LO"` when glucose drops below 40 mg/dL and `"HI"` above 600 mg/dL. Support qualitative `"LO"` / `"HI"` records alongside quantitative numeric integers.
+- **Severe Hypoglycemia Emergency Protocol:** When readings fall below $\le 54$ mg/dL (or `"LO"`), trigger an immediate clinical emergency modal with the *Rule of 15* protocol (consume 15g fast-acting carbs, wait 15 minutes, re-test) and one-tap emergency contact dialing / SMS dispatch.
+- **Dynamic Meal Slots & CGM Integration:** Expand the 4 fixed slots (`MORNING_FASTING`, `AFTER_BREAKFAST`, `AFTER_LUNCH`, `AFTER_DINNER`) to accommodate custom clinical slots (`BEDTIME`, `PRE_MEAL`, `AFTERNOON_SNACK`) for gestational diabetes and insulin pump users, plus time-series ingestion for Continuous Glucose Monitors (CGM like Dexcom and Abbott FreeStyle Libre).
 
 ---
 

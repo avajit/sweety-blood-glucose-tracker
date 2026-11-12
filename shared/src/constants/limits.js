@@ -6,6 +6,7 @@ export const LIMITS = Object.freeze({
   // Glucose reading limits (mg/dl)
   VALUE_MIN: 40,
   VALUE_MAX: 600,
+  READINGS_PER_DAY: 4,
   READINGS_PER_DAY_MAX: 4,
   GLUCOSE_UNIT: 'mg/dl',
 
