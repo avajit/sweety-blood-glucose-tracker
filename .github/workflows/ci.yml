@@ -26,7 +26,7 @@ jobs:
           --health-retries 5
 
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/sweety
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/sweety_test
       TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/sweety_test
       NODE_ENV: test
       JWT_SECRET: ci_test_secret_at_least_32_characters_long
@@ -51,11 +51,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Enable in module 2 once Prisma schema and migrations exist
-      # - name: Run database migrations
-      #   run: npm run db:migrate --workspace=server
-      #   env:
-      #     DATABASE_URL: ${{ env.DATABASE_URL }}
+      - name: Generate Prisma Client
+        run: npx prisma generate --schema=server/prisma/schema.prisma
+
+      - name: Run database migrations
+        run: npx prisma migrate deploy --schema=server/prisma/schema.prisma
+        env:
+          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
 
       - name: Lint
         run: npm run lint
