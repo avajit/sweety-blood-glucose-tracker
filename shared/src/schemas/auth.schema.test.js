@@ -16,14 +16,16 @@ describe('auth.schema.js', () => {
       expect(parsed.password).toBe('Password123!');
     });
 
-    it('rejects payload with extra fields like role (security rule: patient-only registration)', () => {
+    it('strips extra fields like role (security rule: patient-only registration)', () => {
       const payload = {
         name: 'Dr. John',
         email: 'john@example.com',
         password: 'Password123!',
         role: 'DOCTOR',
       };
-      expect(() => registerSchema.parse(payload)).toThrow();
+      const parsed = registerSchema.parse(payload);
+      expect(parsed.role).toBeUndefined();
+      expect(parsed.name).toBe('Dr. John');
     });
 
     it('rejects missing name', () => {

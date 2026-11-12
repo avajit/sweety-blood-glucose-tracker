@@ -1,1 +1,2 @@
-// TODO(module-4): see docs/MODULES.md
+export { UserRepository, userRepository } from './user.repository.js';
+export { toPublicUser } from './user.mapper.js';

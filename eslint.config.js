@@ -18,7 +18,14 @@ export default [
     },
     rules: {
       'no-undef': 'error',
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
 
       // Require .js extension on relative imports
       'import/extensions': ['error', 'ignorePackages', { js: 'always', jsx: 'never' }],
@@ -28,16 +35,6 @@ export default [
         'error',
         {
           patterns: [
-            // controllers cannot import repositories
-            {
-              group: ['**/**.repository*'],
-              message: 'Controllers may not import repositories directly.',
-            },
-            // repositories cannot import services
-            {
-              group: ['**/**.service*'],
-              message: 'Repositories may not import services.',
-            },
             // @prisma/client allowed ONLY in specific files (overridden below)
             {
               group: ['@prisma/client'],
@@ -59,6 +56,44 @@ export default [
       ],
     },
   },
+  // Architecture Rule 1: Controllers cannot import repositories directly
+  {
+    files: ['**/*.controller.js'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/**.repository*'],
+              message: 'Controllers may not import repositories directly.',
+            },
+            {
+              group: ['@prisma/client'],
+              message: 'Controllers may not import @prisma/client.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  // Architecture Rule 2: Repositories cannot import services
+  {
+    files: ['**/*.repository.js'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/**.service*'],
+              message: 'Repositories may not import services.',
+            },
+          ],
+        },
+      ],
+    },
+  },
   // Allow @prisma/client in designated files per architecture
   {
     files: [
@@ -74,14 +109,6 @@ export default [
         'error',
         {
           patterns: [
-            {
-              group: ['**/**.repository*'],
-              message: 'Controllers may not import repositories directly.',
-            },
-            {
-              group: ['**/**.service*'],
-              message: 'Repositories may not import services.',
-            },
             {
               group: ['ioredis'],
               message: 'ioredis may only be imported by src/lib/redis.js.',

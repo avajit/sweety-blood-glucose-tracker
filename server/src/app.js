@@ -9,6 +9,7 @@ import { globalRateLimiter } from './common/middleware/rateLimit.middleware.js';
 import { errorHandlerMiddleware } from './common/middleware/errorHandler.middleware.js';
 import { httpLogger } from './lib/httpLogger.js';
 import { healthRouter } from './modules/health/health.routes.js';
+import { authRouter } from './modules/auth/auth.routes.js';
 import { NotFoundError } from './common/errors/httpErrors.js';
 
 /**
@@ -54,6 +55,7 @@ export function createApp() {
 
   // API Routes
   app.use('/api', healthRouter);
+  app.use('/api/auth', authRouter);
 
   // 404 Fallback Handler
   app.use((req, _res, next) => {

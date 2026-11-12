@@ -21,7 +21,7 @@ export const registerSchema = z
       .string({ required_error: MESSAGES.AUTH_PASSWORD_REQUIRED })
       .min(LIMITS.PASSWORD_MIN_LENGTH, MESSAGES.AUTH_PASSWORD_MIN),
   })
-  .strict(); // Rejects unexpected extra fields such as 'role' or 'userId'
+  .strip(); // Security rule: strips unexpected extra fields such as 'role' or 'userId'
 
 /**
  * Login request schema.
@@ -37,4 +37,4 @@ export const loginSchema = z
       .string({ required_error: MESSAGES.AUTH_PASSWORD_REQUIRED })
       .min(1, MESSAGES.AUTH_PASSWORD_REQUIRED),
   })
-  .strict();
+  .strip();
