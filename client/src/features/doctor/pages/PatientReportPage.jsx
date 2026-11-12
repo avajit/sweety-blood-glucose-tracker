@@ -8,6 +8,7 @@ import { MonthlyChart } from '../../reports/components/MonthlyChart.jsx';
 import { DailyReadingsList } from '../../reports/components/DailyReadingsList.jsx';
 import { Button } from '../../../components/ui/Button.jsx';
 import { LoadingSpinner } from '../../../components/feedback/LoadingSpinner.jsx';
+import { downloadReadingsCsv } from '../../../utils/csvExport.js';
 
 export default function PatientReportPage() {
   const { patientId } = useParams();
@@ -38,6 +39,35 @@ export default function PatientReportPage() {
           <p className="mt-1 text-sm text-slate-500">
             Patient ID: <span className="font-mono text-xs text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">{patientId}</span>
           </p>
+        </div>
+        <div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              downloadReadingsCsv(
+                report?.readings || [],
+                `sweety-patient-${patientId}-${reportType}-${referenceDate}.csv`
+              )
+            }
+            disabled={!report?.readings || report.readings.length === 0}
+            className="shadow-sm"
+          >
+            <svg
+              className="mr-2 h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Export Patient CSV
+          </Button>
         </div>
       </div>
 

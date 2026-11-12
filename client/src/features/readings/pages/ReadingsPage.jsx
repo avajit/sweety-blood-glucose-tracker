@@ -8,6 +8,7 @@ import { Pagination } from '../components/Pagination.jsx';
 import { formatSlot } from '../../../lib/format.js';
 import { Button } from '../../../components/ui/Button.jsx';
 import { Card, CardContent } from '../../../components/ui/Card.jsx';
+import { downloadReadingsCsv } from '../../../utils/csvExport.js';
 
 export default function ReadingsPage() {
   const [page, setPage] = useState(1);
@@ -62,7 +63,28 @@ export default function ReadingsPage() {
             View, filter, and manage your complete blood glucose log.
           </p>
         </div>
-        <div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => downloadReadingsCsv(readings, `sweety-glucose-readings-page-${page}.csv`)}
+            disabled={readings.length === 0}
+            className="shadow-sm"
+          >
+            <svg
+              className="mr-2 h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Export CSV
+          </Button>
           <Button onClick={handleOpenAdd} className="shadow-sm">
             <svg
               className="mr-2 h-4 w-4"
