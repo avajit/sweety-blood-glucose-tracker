@@ -1,9 +1,95 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { todayInTimezone } from '@sweety/shared/utils/date.js';
+import { useReport } from '../../reports/hooks/useReport.js';
+import { ReportDatePicker } from '../../reports/components/ReportDatePicker.jsx';
+import { ReportStats } from '../../reports/components/ReportStats.jsx';
+import { MonthlyChart } from '../../reports/components/MonthlyChart.jsx';
+import { DailyReadingsList } from '../../reports/components/DailyReadingsList.jsx';
+import { Button } from '../../../components/ui/Button.jsx';
+import { LoadingSpinner } from '../../../components/feedback/LoadingSpinner.jsx';
 
 export default function PatientReportPage() {
+  const { patientId } = useParams();
+  const today = todayInTimezone();
+  const [reportType, setReportType] = useState('daily');
+  const [referenceDate, setReferenceDate] = useState(today);
+
+  const { data: report, isLoading, isError, error } = useReport(reportType, {
+    date: referenceDate,
+    patientId,
+  });
+
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold tracking-tight text-slate-900">Patient Clinical Analytics</h1>
+      {/* Navigation Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div className="flex items-center space-x-2 mb-1">
+            <Link to="/doctor/patients">
+              <Button variant="ghost" size="sm" className="px-2 text-slate-500 hover:text-slate-900">
+                ← Back to Patients
+              </Button>
+            </Link>
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            Patient Clinical Analytics
+          </h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Patient ID: <span className="font-mono text-xs text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">{patientId}</span>
+          </p>
+        </div>
+      </div>
+
+      {/* Date & Type Selector */}
+      <ReportDatePicker
+        selectedType={reportType}
+        onTypeChange={(type) => setReportType(type)}
+        selectedDate={referenceDate}
+        onDateChange={(date) => setReferenceDate(date)}
+      />
+
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex h-64 items-center justify-center">
+          <LoadingSpinner size="lg" />
+        </div>
+      )}
+
+      {/* Error State */}
+      {isError && (
+        <div role="alert" className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+          Failed to load patient report: {error?.message || 'Unauthorized or unlinked patient'}
+        </div>
+      )}
+
+      {/* Content */}
+      {!isLoading && !isError && report && (
+        <div className="space-y-6">
+          {/* Active Range & Cohort Info */}
+          {report.range && (
+            <div className="flex items-center justify-between rounded-lg bg-slate-100/80 px-4 py-2.5 text-xs text-slate-700">
+              <div>
+                <span className="font-semibold text-slate-900">Report Window:</span>{' '}
+                <span className="font-mono">{report.range.from}</span> to{' '}
+                <span className="font-mono">{report.range.to}</span>
+              </div>
+              <div className="font-medium text-slate-500">
+                {report.count} {report.count === 1 ? 'reading' : 'readings'} logged
+              </div>
+            </div>
+          )}
+
+          {/* Summary KPI Cards & TIR Bar */}
+          <ReportStats report={report} />
+
+          {/* Recharts Visualisation */}
+          <MonthlyChart readings={report.readings || []} />
+
+          {/* Detailed Readings List */}
+          <DailyReadingsList readings={report.readings || []} />
+        </div>
+      )}
     </div>
   );
 }
