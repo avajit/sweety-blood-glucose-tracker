@@ -1,4 +1,54 @@
-# docker-compose.yml
-# TODO(module-9): Fill in Docker Compose configuration.
-# This file is intentionally left as a comment placeholder.
-# Module 9 will define services: postgres, redis, server, worker, client/nginx.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sweety-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sweety
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d sweety']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: sweety-server
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/sweety
+      JWT_SECRET: production_jwt_secret_must_be_at_least_32_characters_long_sweety_app
+      JWT_EXPIRES_IN: 7d
+      CLIENT_ORIGIN: http://localhost
+      COOKIE_SECURE: 'false'
+      APP_TIMEZONE: Asia/Kolkata
+      ALLOW_DEMO_SEED: 'true'
+    ports:
+      - '4000:4000'
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    container_name: sweety-client
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - '80:80'
+
+volumes:
+  postgres_data:
