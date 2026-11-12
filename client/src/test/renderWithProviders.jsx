@@ -21,6 +21,9 @@ export function renderWithProviders(ui, { initialEntries = ['/'], queryClient: c
           retry: false,
           gcTime: 0,
         },
+        mutations: {
+          retry: false,
+        },
       },
     });
 
