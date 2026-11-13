@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/Card.jsx';
 import { Button } from '../../../components/ui/Button.jsx';
 import { Badge } from '../../../components/ui/Badge.jsx';
+import { useToast } from '../../../components/feedback/ToastContext.jsx';
 import { isPushSupported, subscribeToPush } from '../../../utils/push.js';
 import { getVapidPublicKey, subscribePush, unsubscribePush, sendTestPush } from '../../../api/notifications.api.js';
 
 export function PushNotificationCard() {
+  const toast = useToast();
   const [supported, setSupported] = useState(true);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [currentSubscription, setCurrentSubscription] = useState(null);
@@ -127,8 +129,10 @@ export function PushNotificationCard() {
 
       if (showedNative) {
         setMessage('🔔 Test alert dispatched! Check the bottom-right corner of your screen.');
+        toast.success('🔔 Sweety Reminder: Please remember to log your remaining blood glucose readings today!');
       } else {
         setMessage('🔔 Test reminder simulated: "Dear Demo Patient, please remember to log your remaining blood glucose readings today!"');
+        toast.info('🔔 Sweety Reminder: Please remember to log your remaining blood glucose readings today!');
       }
     } catch (err) {
       setError(err.message || 'Failed to send test push alert.');
