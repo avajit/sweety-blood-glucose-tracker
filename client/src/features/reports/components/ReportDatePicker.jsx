@@ -1,11 +1,12 @@
 import React from 'react';
 import { todayInTimezone } from '@sweety/shared/utils/date.js';
 import { Button } from '../../../components/ui/Button.jsx';
+import { CalendarIcon } from '../../../components/icons/index.jsx';
 
 const REPORT_TYPES = [
   { id: 'daily', label: 'Daily Log' },
   { id: 'month-to-date', label: 'Month-to-Date' },
-  { id: 'monthly', label: 'Previous Month' },
+  { id: 'monthly', label: 'Full Monthly' },
 ];
 
 export function ReportDatePicker({
@@ -17,9 +18,9 @@ export function ReportDatePicker({
   const today = todayInTimezone();
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      {/* Report Type Tabs */}
-      <div className="flex rounded-lg bg-slate-100 p-1">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-2xl border border-[#EAE3DB] bg-white p-4 shadow-subtle">
+      {/* Report Timeframe Segmented Pill Bar */}
+      <div className="inline-flex rounded-full bg-[#F3EDE6] p-1 border border-[#EAE3DB]/80">
         {REPORT_TYPES.map((type) => {
           const isActive = selectedType === type.id;
           return (
@@ -27,10 +28,10 @@ export function ReportDatePicker({
               key={type.id}
               type="button"
               onClick={() => onTypeChange(type.id)}
-              className={`rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all ${
+              className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
                 isActive
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#195A5F] text-white shadow-subtle'
+                  : 'text-[#4D6B6D] hover:text-[#0F3336]'
               }`}
             >
               {type.label}
@@ -39,10 +40,14 @@ export function ReportDatePicker({
         })}
       </div>
 
-      {/* Reference Date Picker */}
-      <div className="flex items-center space-x-2">
-        <label htmlFor="report-reference-date" className="text-xs font-semibold text-slate-600 whitespace-nowrap">
-          Reference Date:
+      {/* Reference Date Picker with Stepper helper */}
+      <div className="flex items-center space-x-2.5">
+        <label
+          htmlFor="report-reference-date"
+          className="flex items-center space-x-1.5 text-xs font-semibold uppercase tracking-wider text-[#4D6B6D] whitespace-nowrap"
+        >
+          <CalendarIcon className="h-4 w-4 text-[#128B80]" />
+          <span>Reference Date:</span>
         </label>
         <input
           id="report-reference-date"
@@ -50,14 +55,14 @@ export function ReportDatePicker({
           max={today}
           value={selectedDate || today}
           onChange={(e) => onDateChange(e.target.value)}
-          className="flex h-9 rounded-md border border-input bg-background px-3 py-1 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex h-9 rounded-xl border border-[#EAE3DB] bg-white px-3 py-1 text-xs sm:text-sm text-[#0F3336] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#128B80] transition-colors"
         />
         {selectedDate !== today && (
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onDateChange(today)}
-            className="text-xs text-slate-500"
+            className="text-xs h-9 px-3 text-[#195A5F]"
           >
             Today
           </Button>

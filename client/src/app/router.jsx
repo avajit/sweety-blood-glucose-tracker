@@ -13,31 +13,26 @@ const PageFallback = () => (
   </div>
 );
 
-// Feature Pages
-const LoginPage = React.lazy(() => import('../features/auth/pages/LoginPage.jsx'));
-const RegisterPage = React.lazy(() => import('../features/auth/pages/RegisterPage.jsx'));
+// Feature Pages (Eagerly import auth entry pages to eliminate Suspense flicker on route switch)
+import LoginPage from '../features/auth/pages/LoginPage.jsx';
+import RegisterPage from '../features/auth/pages/RegisterPage.jsx';
+
 const DashboardPage = React.lazy(() => import('../features/readings/pages/DashboardPage.jsx'));
 const ReadingsPage = React.lazy(() => import('../features/readings/pages/ReadingsPage.jsx'));
+const ReadingEntryPage = React.lazy(() => import('../features/readings/pages/ReadingEntryPage.jsx'));
 const ReportsPage = React.lazy(() => import('../features/reports/pages/ReportsPage.jsx'));
+const SettingsPage = React.lazy(() => import('../features/settings/pages/SettingsPage.jsx'));
 const PatientsPage = React.lazy(() => import('../features/doctor/pages/PatientsPage.jsx'));
 const PatientReportPage = React.lazy(() => import('../features/doctor/pages/PatientReportPage.jsx'));
 
 export const router = createBrowserRouter([
   {
     path: '/login',
-    element: (
-      <Suspense fallback={<PageFallback />}>
-        <LoginPage />
-      </Suspense>
-    ),
+    element: <LoginPage />,
   },
   {
     path: '/register',
-    element: (
-      <Suspense fallback={<PageFallback />}>
-        <RegisterPage />
-      </Suspense>
-    ),
+    element: <RegisterPage />,
   },
   {
     path: '/',
@@ -68,10 +63,34 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: 'readings/new',
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <ReadingEntryPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'readings/:id/edit',
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <ReadingEntryPage />
+          </Suspense>
+        ),
+      },
+      {
         path: 'reports',
         element: (
           <Suspense fallback={<PageFallback />}>
             <ReportsPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'settings',
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <SettingsPage />
           </Suspense>
         ),
       },

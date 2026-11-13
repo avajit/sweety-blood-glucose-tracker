@@ -2,19 +2,25 @@ import React from 'react';
 import { cn } from '../../lib/utils.js';
 
 const variantClasses = {
-  primary: 'bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-primary',
-  secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 focus-visible:ring-secondary',
-  destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90 focus-visible:ring-destructive',
-  outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-  ghost: 'hover:bg-accent hover:text-accent-foreground',
-  link: 'text-primary underline-offset-4 hover:underline',
+  primary:
+    'bg-[#195A5F] text-white hover:bg-[#14484B] focus-visible:ring-[#195A5F]',
+  secondary:
+    'bg-[#128B80] text-white hover:bg-[#0E6F67] focus-visible:ring-[#128B80]',
+  destructive:
+    'bg-[#991B1B] text-white hover:bg-[#7F1D1D] focus-visible:ring-[#991B1B]',
+  outline:
+    'border border-[#EAE3DB] bg-white text-[#0F3336] hover:bg-[#F3EDE6]/60 focus-visible:ring-[#195A5F]',
+  ghost:
+    'text-[#0F3336] hover:bg-[#EAE3DB]/40 focus-visible:ring-[#195A5F]',
+  link:
+    'text-[#195A5F] underline-offset-4 hover:underline p-0 h-auto font-medium',
 };
 
 const sizeClasses = {
-  sm: 'h-8 px-3 text-xs rounded-md',
-  md: 'h-10 px-4 py-2 text-sm rounded-md',
-  lg: 'h-11 px-8 text-base rounded-lg',
-  icon: 'h-10 w-10 p-2 rounded-md',
+  sm: 'h-8 px-3.5 text-xs rounded-full',
+  md: 'h-10 px-5 py-2 text-sm rounded-full',
+  lg: 'h-11 px-7 text-base rounded-full',
+  icon: 'h-9 w-9 p-2 rounded-full',
 };
 
 export function Button({
@@ -32,7 +38,7 @@ export function Button({
       type={type}
       disabled={disabled || isLoading}
       className={cn(
-        'inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none',
+        'inline-flex items-center justify-center font-medium transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40 select-none cursor-pointer',
         variantClasses[variant] || variantClasses.primary,
         sizeClasses[size] || sizeClasses.md,
         className,
@@ -58,4 +64,3 @@ export function Button({
     </button>
   );
 }
-

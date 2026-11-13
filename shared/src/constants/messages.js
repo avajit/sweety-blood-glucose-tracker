@@ -3,7 +3,7 @@
  * Note: Hard requirement — error messages live ONLY in this file.
  */
 export const MESSAGES = Object.freeze({
-  // Blood glucose reading validation (Kenpath exact specifications)
+  // Clinical blood glucose reading validation specifications
   VALUE_REQUIRED: 'Please enter a glucose value.',
   VALUE_RANGE: 'Value must be between 40 and 600 mg/dl.',
   DAILY_LIMIT_EXCEEDED: 'You can add only 4 readings per day.',

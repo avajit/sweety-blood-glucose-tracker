@@ -8,6 +8,7 @@ import { DailyReadingsList } from '../components/DailyReadingsList.jsx';
 import { LoadingSpinner } from '../../../components/feedback/LoadingSpinner.jsx';
 import { Button } from '../../../components/ui/Button.jsx';
 import { downloadReadingsCsv } from '../../../utils/csvExport.js';
+import { DownloadIcon } from '../../../components/icons/index.jsx';
 
 export default function ReportsPage() {
   const today = todayInTimezone();
@@ -19,17 +20,22 @@ export default function ReportsPage() {
   });
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-6 sm:space-y-8">
+      {/* 1. Clinical Masthead */}
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 pb-2 border-b border-[#EAE3DB]">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#128B80]">
+            Clinical Analytics
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-[#0F3336] tracking-tight mt-0.5">
             Clinical Analytics & Reports
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-[#4D6B6D]">
             Review your glucose trends, Time-in-Range (TIR), and estimated A1C against ADA clinical targets.
           </p>
         </div>
+
+        {/* Action Button: Export Report CSV */}
         <div>
           <Button
             variant="outline"
@@ -41,27 +47,15 @@ export default function ReportsPage() {
               )
             }
             disabled={!report?.readings || report.readings.length === 0}
-            className="shadow-sm"
+            className="space-x-1.5"
           >
-            <svg
-              className="mr-2 h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            Export Report CSV
+            <DownloadIcon className="h-4 w-4 text-[#128B80]" />
+            <span>Export Report CSV</span>
           </Button>
         </div>
       </div>
 
-      {/* Date & Type Selector */}
+      {/* 2. Date & Timeframe Selector */}
       <ReportDatePicker
         selectedType={reportType}
         onTypeChange={(type) => setReportType(type)}
@@ -71,31 +65,37 @@ export default function ReportsPage() {
 
       {/* Loading State */}
       {isLoading && (
-        <div className="flex h-64 items-center justify-center">
+        <div className="flex flex-col items-center justify-center py-20 space-y-3">
           <LoadingSpinner size="lg" />
+          <p className="text-xs font-medium uppercase tracking-wider text-[#4D6B6D]">
+            Generating clinical analytics...
+          </p>
         </div>
       )}
 
       {/* Error State */}
       {isError && (
-        <div role="alert" className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+        <div
+          role="alert"
+          className="rounded-xl border border-[#991B1B]/30 bg-[#FEE2E2]/60 p-4 text-xs font-medium text-[#991B1B]"
+        >
           Failed to load clinical report: {error?.message || 'Server error'}
         </div>
       )}
 
-      {/* Content */}
+      {/* 3. Analytics Content */}
       {!isLoading && !isError && report && (
-        <div className="space-y-6">
-          {/* Active Range & Cohort Info */}
+        <div className="space-y-6 sm:space-y-8">
+          {/* Active Range & Cohort Info Banner */}
           {report.range && (
-            <div className="flex items-center justify-between rounded-lg bg-slate-100/80 px-4 py-2.5 text-xs text-slate-700">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-xl bg-[#F3EDE6]/60 border border-[#EAE3DB] px-4 py-3 text-xs text-[#4D6B6D]">
               <div>
-                <span className="font-semibold text-slate-900">Report Window:</span>{' '}
-                <span className="font-mono">{report.range.from}</span> to{' '}
-                <span className="font-mono">{report.range.to}</span>
+                <span className="font-semibold text-[#0F3336]">Report Window:</span>{' '}
+                <span className="font-mono font-medium">{report.range.from}</span> to{' '}
+                <span className="font-mono font-medium">{report.range.to}</span>
               </div>
-              <div className="font-medium text-slate-500">
-                {report.count} {report.count === 1 ? 'reading' : 'readings'} logged
+              <div className="font-semibold text-[#195A5F] uppercase tracking-wider text-[11px]">
+                {report.count} {report.count === 1 ? 'reading' : 'readings'} evaluated
               </div>
             </div>
           )}
@@ -103,7 +103,7 @@ export default function ReportsPage() {
           {/* Summary KPI Cards & TIR Bar */}
           <ReportStats report={report} />
 
-          {/* Recharts Visualisation */}
+          {/* Recharts Visualization */}
           <MonthlyChart readings={report.readings || []} />
 
           {/* Detailed Readings List */}

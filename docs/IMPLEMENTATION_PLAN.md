@@ -1,10 +1,12 @@
 # Implementation Plan — Sweety Blood Glucose Tracker
 
-Time-boxed execution checklist for the Sweety blood-glucose tracker assignment (deadline: Friday 13 Nov 2026).
+Structured engineering execution roadmap for the Sweety blood-glucose monitoring platform.
 
-> **Strategy:**
-> - **Tier 1 = required**, merged and tested by Thursday night.
-> - **Tiers 2–4 = bonus**; drop anything unmerged and untested at Friday 2 PM and list it under README Notes.
+> **Architecture & Milestone Strategy:**
+> - **Tier 1: Core Clinical Engine & Persistence** — Patient authentication, glucose CRUD, and database CHECK constraints.
+> - **Tier 2: Clinical Reporting & Visual Analytics** — ADA compliance, Time-in-Range (TIR), eA1c calculations, and Recharts.
+> - **Tier 3: Healthcare Provider Portal & Data Portability** — Doctor-patient association, clinical access policies, and RFC 4180 CSV export.
+> - **Tier 4: Enterprise Infrastructure & Asynchronous Systems** — Redis caching, BullMQ background reminders, and W3C Web Push notifications.
 
 ---
 

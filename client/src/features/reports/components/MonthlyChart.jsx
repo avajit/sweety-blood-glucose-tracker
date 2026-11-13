@@ -10,27 +10,35 @@ import {
   ReferenceArea,
   ReferenceLine,
 } from 'recharts';
-import { formatSlot, formatGlucose, getClinicalMeta } from '../../../lib/format.js';
+import { formatSlot, formatGlucose } from '../../../lib/format.js';
 import { getReadingClinicalAssessment } from '@sweety/shared/utils/clinical.js';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../../components/ui/Card.jsx';
+import { Badge } from '../../../components/ui/Badge.jsx';
 
 function CustomTooltip({ active, payload }) {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     const assessment = getReadingClinicalAssessment(data.value, data.rawSlot);
-    const meta = getClinicalMeta(assessment.code);
+    const badgeVariant =
+      assessment.color === 'green'
+        ? 'target'
+        : assessment.color === 'rose' || assessment.color === 'red'
+          ? 'critical'
+          : 'high';
 
     return (
-      <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-lg text-xs space-y-1">
-        <p className="font-bold text-slate-900">{data.date}</p>
-        <p className="text-slate-600">{formatSlot(data.rawSlot)}</p>
-        <div className="flex items-center space-x-2 pt-1">
-          <span className="text-base font-extrabold text-slate-900">
+      <div className="rounded-xl border border-[#EAE3DB] bg-white p-3.5 shadow-xl text-xs space-y-1.5 min-w-[170px]">
+        <div className="flex items-center justify-between text-[#4D6B6D] text-[11px] pb-1 border-b border-[#EAE3DB]">
+          <span className="font-semibold">{data.date}</span>
+          <span>{formatSlot(data.rawSlot)}</span>
+        </div>
+        <div className="flex items-center justify-between pt-1">
+          <span className="text-lg font-bold tabular-nums text-[#0F3336]">
             {formatGlucose(data.value)}
           </span>
-          <span className={`rounded px-1.5 py-0.5 font-semibold text-[11px] ${meta.badgeClass}`}>
+          <Badge variant={badgeVariant} className="text-[10px] py-0 px-2">
             {assessment.label}
-          </span>
+          </Badge>
         </div>
       </div>
     );
@@ -52,24 +60,24 @@ export function MonthlyChart({ readings = [] }) {
     : [];
 
   return (
-    <Card className="border-slate-200">
+    <Card className="border-[#EAE3DB] bg-white">
       <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <CardTitle className="text-base font-bold text-slate-900">
+            <CardTitle className="text-base font-serif font-bold text-[#0F3336]">
               Glucose Trend & Target Zone
             </CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-xs text-[#4D6B6D]">
               Green shaded band represents ADA target range (70–180 mg/dL)
             </CardDescription>
           </div>
-          <div className="flex items-center space-x-4 text-xs font-medium text-slate-600">
+          <div className="flex items-center space-x-4 text-xs font-medium text-[#4D6B6D]">
             <span className="flex items-center">
-              <span className="mr-1.5 h-2.5 w-2.5 rounded-full bg-indigo-600" />
+              <span className="mr-1.5 h-2.5 w-2.5 rounded-full bg-[#195A5F]" />
               Glucose Level
             </span>
             <span className="flex items-center">
-              <span className="mr-1.5 h-2.5 w-2.5 rounded bg-emerald-100 border border-emerald-300" />
+              <span className="mr-1.5 h-2.5 w-2.5 rounded bg-[#1B6B2E]/20 border border-[#1B6B2E]/50" />
               Target (70–180)
             </span>
           </div>
@@ -77,9 +85,9 @@ export function MonthlyChart({ readings = [] }) {
       </CardHeader>
       <CardContent className="pt-2">
         {!hasData ? (
-          <div className="flex h-64 flex-col items-center justify-center text-center text-slate-400">
+          <div className="flex h-64 flex-col items-center justify-center text-center text-[#4D6B6D]">
             <svg
-              className="h-10 w-10 text-slate-300 mb-2"
+              className="h-10 w-10 text-[#4D6B6D]/40 mb-2"
               fill="none"
               stroke="currentColor"
               strokeLinecap="round"
@@ -89,9 +97,11 @@ export function MonthlyChart({ readings = [] }) {
             >
               <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
             </svg>
-            <p className="text-sm font-medium">No readings in selected range</p>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Log glucose readings to visualize clinical trends.
+            <p className="text-sm font-semibold text-[#0F3336]">
+              No readings in selected range
+            </p>
+            <p className="text-xs text-[#4D6B6D] mt-0.5">
+              Log glucose readings across your meal slots to visualize clinical trends.
             </p>
           </div>
         ) : (
@@ -101,18 +111,22 @@ export function MonthlyChart({ readings = [] }) {
                 data={chartData}
                 margin={{ top: 10, right: 20, left: -10, bottom: 0 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="#EAE3DB"
+                  vertical={false}
+                />
                 <XAxis
                   dataKey="date"
                   tickLine={false}
-                  stroke="#94a3b8"
+                  stroke="#4D6B6D"
                   fontSize={11}
                   tickMargin={8}
                 />
                 <YAxis
                   domain={[40, 'auto']}
                   tickLine={false}
-                  stroke="#94a3b8"
+                  stroke="#4D6B6D"
                   fontSize={11}
                   tickMargin={8}
                 />
@@ -122,19 +136,34 @@ export function MonthlyChart({ readings = [] }) {
                 <ReferenceArea
                   y1={70}
                   y2={180}
-                  fill="#10b981"
+                  fill="#1B6B2E"
                   fillOpacity={0.08}
                 />
-                <ReferenceLine y={70} stroke="#10b981" strokeDasharray="3 3" opacity={0.6} />
-                <ReferenceLine y={180} stroke="#10b981" strokeDasharray="3 3" opacity={0.6} />
+                <ReferenceLine
+                  y={70}
+                  stroke="#1B6B2E"
+                  strokeDasharray="3 3"
+                  strokeOpacity={0.6}
+                />
+                <ReferenceLine
+                  y={180}
+                  stroke="#1B6B2E"
+                  strokeDasharray="3 3"
+                  strokeOpacity={0.6}
+                />
 
                 <Line
                   type="monotone"
                   dataKey="value"
-                  stroke="#4f46e5"
+                  stroke="#195A5F"
                   strokeWidth={2.5}
-                  dot={{ r: 4, fill: '#4f46e5', strokeWidth: 1, stroke: '#ffffff' }}
-                  activeDot={{ r: 6, fill: '#4338ca' }}
+                  dot={{
+                    r: 4,
+                    fill: '#195A5F',
+                    strokeWidth: 1,
+                    stroke: '#ffffff',
+                  }}
+                  activeDot={{ r: 6, fill: '#128B80' }}
                 />
               </LineChart>
             </ResponsiveContainer>

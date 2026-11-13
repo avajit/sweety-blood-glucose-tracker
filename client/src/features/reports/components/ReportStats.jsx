@@ -19,7 +19,7 @@ export function ReportStats({ report }) {
   return (
     <div className="space-y-4">
       {/* 4 Primary Metric Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <ReportCard
           title="Average Glucose"
           value={average}
@@ -30,83 +30,87 @@ export function ReportStats({ report }) {
           title="Lowest Reading"
           value={lowest}
           unit="mg/dL"
-          subtitle={lowest && lowest < 70 ? 'Hypoglycemia detected' : undefined}
+          subtitle={lowest && lowest < 70 ? 'Hypoglycemia detected' : count > 0 ? 'Daily baseline' : undefined}
           alert={Boolean(lowest && lowest < 70)}
         />
         <ReportCard
           title="Highest Reading"
           value={highest}
           unit="mg/dL"
-          subtitle={highest && highest > 180 ? 'Hyperglycemia detected' : undefined}
+          subtitle={highest && highest > 180 ? 'Hyperglycemia detected' : count > 0 ? 'Daily ceiling' : undefined}
           alert={Boolean(highest && highest > 250)}
         />
         <ReportCard
           title="Estimated A1C"
           value={a1c}
-          subtitle={count >= 14 ? 'ADA (avg+46.7)/28.7' : 'Requires multi-day data'}
+          subtitle={count >= 14 ? 'ADA standard formula' : 'Requires multi-day log'}
         />
       </div>
 
       {/* Time in Range (TIR) International Standard Bar */}
-      <Card className="border-slate-200">
-        <CardContent className="p-5">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+      <Card className="border-[#EAE3DB] bg-white">
+        <CardContent className="p-5 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
             <div>
-              <h4 className="text-sm font-bold text-slate-900">Time In Range (TIR)</h4>
-              <p className="text-xs text-slate-500">
-                ADA Target: &gt; 70% in target range (70–180 mg/dL)
+              <h4 className="text-sm font-serif font-bold text-[#0F3336]">
+                Time In Range (TIR)
+              </h4>
+              <p className="text-xs text-[#4D6B6D] mt-0.5">
+                ADA Target Benchmark: &gt; 70% in target range (70–180 mg/dL)
               </p>
             </div>
-            <div className="text-xs font-semibold text-slate-700">
+            <div className="text-xs font-semibold uppercase tracking-wider text-[#4D6B6D] tabular-nums">
               {count > 0 ? `${count} total logged readings` : '—'}
             </div>
           </div>
 
           {count > 0 ? (
             <div>
-              {/* Stacked Progress Bar */}
-              <div className="flex h-4 w-full rounded-full overflow-hidden bg-slate-100">
+              {/* Stacked Accessible TIR Progress Bar */}
+              <div className="flex h-5 w-full rounded-full overflow-hidden bg-[#F3EDE6] p-0.5 border border-[#EAE3DB]">
                 {tir.lowPct > 0 && (
                   <div
                     style={{ width: `${tir.lowPct}%` }}
-                    className="bg-rose-500 transition-all duration-300"
+                    className="bg-[#991B1B] rounded-l-full transition-all duration-300"
                     title={`Low (<70 mg/dL): ${tir.lowPct}%`}
                   />
                 )}
                 {tir.inRangePct > 0 && (
                   <div
                     style={{ width: `${tir.inRangePct}%` }}
-                    className="bg-emerald-500 transition-all duration-300"
+                    className={`bg-[#128B80] transition-all duration-300 ${
+                      tir.lowPct === 0 ? 'rounded-l-full' : ''
+                    } ${tir.highPct === 0 ? 'rounded-r-full' : ''}`}
                     title={`In Target (70-180 mg/dL): ${tir.inRangePct}%`}
                   />
                 )}
                 {tir.highPct > 0 && (
                   <div
                     style={{ width: `${tir.highPct}%` }}
-                    className="bg-amber-500 transition-all duration-300"
+                    className="bg-[#D0976C] rounded-r-full transition-all duration-300"
                     title={`High (>180 mg/dL): ${tir.highPct}%`}
                   />
                 )}
               </div>
 
-              {/* TIR Legend */}
-              <div className="mt-3 grid grid-cols-3 gap-2 text-center text-xs">
-                <div className="rounded-md bg-rose-50 p-2 text-rose-800">
-                  <div className="font-bold">{tir.lowPct}%</div>
-                  <div className="text-[11px] text-rose-600">Low (&lt; 70)</div>
+              {/* TIR Clinical Legend Breakdown */}
+              <div className="mt-4 grid grid-cols-3 gap-2.5 sm:gap-3 text-center text-xs">
+                <div className="rounded-xl border border-[#991B1B]/20 bg-[#FEE2E2]/60 p-2.5 text-[#991B1B]">
+                  <div className="text-base sm:text-lg font-bold tabular-nums">{tir.lowPct}%</div>
+                  <div className="text-[11px] font-medium mt-0.5">Low (&lt; 70)</div>
                 </div>
-                <div className="rounded-md bg-emerald-50 p-2 text-emerald-800">
-                  <div className="font-bold">{tir.inRangePct}%</div>
-                  <div className="text-[11px] text-emerald-600">Target (70–180)</div>
+                <div className="rounded-xl border border-[#128B80]/30 bg-[#128B80]/10 p-2.5 text-[#195A5F]">
+                  <div className="text-base sm:text-lg font-bold tabular-nums">{tir.inRangePct}%</div>
+                  <div className="text-[11px] font-medium mt-0.5">Target (70–180)</div>
                 </div>
-                <div className="rounded-md bg-amber-50 p-2 text-amber-800">
-                  <div className="font-bold">{tir.highPct}%</div>
-                  <div className="text-[11px] text-amber-600">High (&gt; 180)</div>
+                <div className="rounded-xl border border-[#D0976C]/30 bg-[#D0976C]/15 p-2.5 text-[#8C5832]">
+                  <div className="text-base sm:text-lg font-bold tabular-nums">{tir.highPct}%</div>
+                  <div className="text-[11px] font-medium mt-0.5">High (&gt; 180)</div>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="py-4 text-center text-sm text-slate-400">
+            <div className="py-6 text-center text-xs text-[#4D6B6D] italic border-t border-[#EAE3DB] mt-2">
               — No readings available to calculate Time-in-Range —
             </div>
           )}

@@ -1,16 +1,17 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useCurrentUser } from '../hooks/useCurrentUser.js';
 import { RegisterForm } from '../components/RegisterForm.jsx';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../components/ui/Card.jsx';
 import { LoadingSpinner } from '../../../components/feedback/LoadingSpinner.jsx';
+import { SweetyBrandmark } from '../../../components/icons/index.jsx';
 
 export default function RegisterPage() {
   const { isAuthenticated, isLoading } = useCurrentUser();
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+      <div className="flex min-h-screen items-center justify-center bg-[#F3EDE6]">
         <LoadingSpinner size="lg" />
       </div>
     );
@@ -21,32 +22,41 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600 text-white font-bold shadow-md">
-            <svg
-              className="h-7 w-7"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2.5"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
+    <div className="min-h-screen flex flex-col items-center pt-12 sm:pt-20 pb-12 bg-[#F3EDE6] px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md space-y-6">
+        {/* Brand & Editorial Wordmark (Fixed top position) */}
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center space-x-3 mb-1.5">
+            <SweetyBrandmark className="h-9 w-9 shrink-0 shadow-subtle" />
+            <h1 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-[#0F3336]">
+              Sweety<span className="text-[#128B80]">.</span>
+            </h1>
           </div>
-          <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900">
-            Sweety<span className="text-indigo-600">.</span>
-          </h1>
-          <p className="mt-1 text-sm text-slate-500">Clinical Blood Glucose Tracking</p>
+          <p className="text-xs sm:text-sm text-[#4D6B6D]">
+            Clinical Blood Glucose Monitoring Platform
+          </p>
         </div>
 
-        <Card className="border-slate-200 shadow-sm">
-          <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-xl font-bold text-center">Create Patient Account</CardTitle>
-            <CardDescription className="text-center">
+        {/* Auth Surface */}
+        <Card className="border-[#EAE3DB] shadow-subtle bg-white">
+          <CardHeader className="space-y-1 pb-4 text-center">
+            {/* Segmented Auth Mode Switcher */}
+            <div className="flex rounded-full bg-[#F3EDE6] p-1 mb-3 border border-[#EAE3DB]">
+              <Link
+                to="/login"
+                className="flex-1 py-1.5 text-center text-xs font-semibold rounded-full text-[#4D6B6D] hover:text-[#0F3336] transition-colors"
+              >
+                Sign in
+              </Link>
+              <span className="flex-1 py-1.5 text-center text-xs font-semibold rounded-full bg-[#195A5F] text-white shadow-subtle">
+                Create account
+              </span>
+            </div>
+
+            <CardTitle className="text-xl font-serif font-bold text-[#0F3336]">
+              Create Patient Account
+            </CardTitle>
+            <CardDescription className="text-xs text-[#4D6B6D]">
               Begin tracking your daily blood glucose readings
             </CardDescription>
           </CardHeader>

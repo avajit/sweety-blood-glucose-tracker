@@ -17,6 +17,15 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+    container_name: sweety-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+
   server:
     build:
       context: .
@@ -52,3 +61,4 @@ services:
 
 volumes:
   postgres_data:
+  redis_data:

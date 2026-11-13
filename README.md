@@ -15,6 +15,7 @@ A production-grade, clinical blood glucose monitoring application built for diab
 ## Table of Contents
 
 - [Overview](#overview)
+- [Reviewer Quick Start](#-reviewer-quick-start-run-in-2-minutes)
 - [System Architecture & Monorepo](#system-architecture--monorepo)
 - [Clinical Guidelines (ADA Standards)](#clinical-guidelines-ada-standards)
 - [Key Features](#key-features)
@@ -156,7 +157,61 @@ Before setting up the project, ensure you have the following installed:
 
 ---
 
-## Installation & Setup
+## ⚡ Reviewer Quick Start (Run in 2 Minutes)
+
+You can evaluate Sweety either via **Docker Compose (Zero-Config)** or **Local Node.js**:
+
+### Option 1: Docker (Single Command — Recommended for Reviewers)
+Spins up PostgreSQL 16, Redis 7, Express 5 API Server, and Nginx React Client with automated migrations and seed data:
+```bash
+# 1. Clone repository
+git clone https://github.com/avajit/sweety-blood-glucose-tracker.git
+cd sweety-blood-glucose-tracker
+
+# 2. Build and launch all services
+npm run docker:up
+```
+* **Web Application:** [http://localhost](http://localhost) (Port 80)
+* **Backend Health Check:** [http://localhost/api/health](http://localhost/api/health)
+* *Sign in using the pre-seeded Demo Accounts below.*
+
+---
+
+### Option 2: Local Node.js Development Setup
+Requires **Node.js >= 22** and a local **PostgreSQL** instance:
+```bash
+# 1. Install dependencies across all npm workspaces
+npm install
+
+# 2. Copy environment configuration
+cp .env.example .env
+
+# 3. Apply Prisma migrations and seed 60 days of clinical records
+npm run db:migrate
+npm run db:seed
+
+# 4. Start backend API server (Terminal 1)
+npm run dev:server
+
+# 5. Start React frontend client (Terminal 2)
+npm run dev:client
+```
+* **Frontend SPA:** [http://localhost:5173](http://localhost:5173)
+* **API Server:** [http://localhost:3000](http://localhost:3000)
+
+---
+
+### 🔑 Demo Evaluation Credentials
+The database seed script automatically provisions two fully populated evaluation accounts:
+
+| Role | Email | Password | Pre-populated Clinical Data |
+|---|---|---|---|
+| **Patient** | `demo@sweety.app` | `Demo@1234` | **60 days of realistic clinical readings** across all 4 meal slots with ADA target classifications, eA1c, and Time-in-Range (TIR). |
+| **Doctor** | `doctor@sweety.app` | `Doctor@1234` | Linked to Demo Patient; access via `/doctor/patients` to review clinical longitudinal analytics. |
+
+---
+
+## Installation & Setup (Detailed Walkthrough)
 
 ### 1. Clone Repository & Install Dependencies
 ```bash
@@ -175,13 +230,13 @@ Ensure `.env` matches your local database credentials:
 ```env
 # Application
 NODE_ENV=development
-PORT=4000
+PORT=3000
 CLIENT_ORIGIN=http://localhost:5173
 APP_TIMEZONE=Asia/Kolkata
 VITE_APP_TIMEZONE=Asia/Kolkata
 
 # Database (PostgreSQL)
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/sweety_dev?schema=public
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/sweety?schema=public
 
 # Authentication & Security
 JWT_SECRET=super_secret_jwt_key_at_least_32_characters_long
@@ -204,11 +259,9 @@ npm run db:seed
 
 ## Running the Application
 
-You can run individual workspaces or run both frontend and backend concurrently:
-
 | Component | Command | URL / Details |
 |---|---|---|
-| **API Server** | `npm run dev:server` | `http://localhost:4000` |
+| **API Server** | `npm run dev:server` | `http://localhost:3000` |
 | **Frontend SPA** | `npm run dev:client` | `http://localhost:5173` |
 | **Background Worker** | `npm run dev:worker` | BullMQ standalone reminder process |
 | **Prisma Studio** | `npm run db:studio` | Interactive database GUI at `http://localhost:5555` |

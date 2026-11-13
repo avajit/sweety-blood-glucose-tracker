@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { authApi } from '../../../api/auth.api.js';
 import { queryKeys } from '../../../api/queryKeys.js';
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
 /**
  * Global authentication state provider.
@@ -66,7 +66,18 @@ export function AuthProvider({ children }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    return {
+      user: null,
+      isAuthenticated: false,
+      role: null,
+      isLoading: false,
+      login: async () => {},
+      register: async () => {},
+      logout: async () => {},
+      isLoggingIn: false,
+      isRegistering: false,
+      isLoggingOut: false,
+    };
   }
   return context;
 }

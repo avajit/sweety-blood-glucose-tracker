@@ -9,14 +9,21 @@ export function LoadingSpinner({ className, size = 'md', label = 'Loading...' })
   }[size] || 'h-8 w-8 border-3';
 
   return (
-    <div className={cn('flex flex-col items-center justify-center p-6 text-slate-500', className)} role="status">
+    <div
+      className={cn('flex flex-col items-center justify-center p-6 text-[#195A5F]', className)}
+      role="status"
+    >
       <div
         className={cn(
-          'animate-spin rounded-full border-solid border-primary border-t-transparent',
+          'animate-spin rounded-full border-solid border-current border-t-transparent',
           sizeClass,
         )}
       />
-      {label && <span className="mt-3 text-xs font-medium text-muted-foreground">{label}</span>}
+      {label && (
+        <span className="mt-3 text-xs font-semibold uppercase tracking-wider text-[#4D6B6D]">
+          {label}
+        </span>
+      )}
     </div>
   );
 }

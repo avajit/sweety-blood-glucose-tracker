@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../../../components/ui/Button.jsx';
 import { CLINICAL_TARGETS } from '@sweety/shared/constants/clinical.js';
+import { AlertCircleIcon } from '../../../components/icons/index.jsx';
 
 /**
  * Formats seconds into MM:SS string.
@@ -49,43 +50,33 @@ export function HypoglycemiaAlertModal({ value, isOpen, onClose }) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="hypo-alert-title"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 backdrop-blur-sm p-4 animate-in fade-in duration-200"
     >
       <div
-        className={`w-full max-w-lg rounded-2xl border p-6 shadow-2xl transition-all ${
+        className={`w-full max-w-lg rounded-2xl border p-6 sm:p-7 shadow-2xl transition-all bg-white ${
           isSevere
-            ? 'border-rose-300 bg-white ring-4 ring-rose-500/20'
-            : 'border-amber-300 bg-white ring-4 ring-amber-500/20'
+            ? 'border-[#991B1B] ring-4 ring-[#991B1B]/15'
+            : 'border-[#D0976C] ring-4 ring-[#D0976C]/15'
         }`}
       >
         {/* Urgency Badge & Title */}
-        <div className="flex items-start space-x-3">
+        <div className="flex items-start space-x-3.5">
           <div
-            className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full ${
-              isSevere ? 'bg-rose-100 text-rose-600' : 'bg-amber-100 text-amber-600'
+            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${
+              isSevere
+                ? 'bg-[#FEE2E2] text-[#991B1B]'
+                : 'bg-[#D0976C]/20 text-[#8C5832]'
             }`}
           >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
+            <AlertCircleIcon className="h-6 w-6" />
           </div>
           <div>
-            <h3 id="hypo-alert-title" className="text-xl font-bold text-slate-900">
+            <h3 id="hypo-alert-title" className="text-xl font-bold text-[#0F3336]">
               {isSevere
                 ? `Critical Low: ${value} mg/dL (Level 2)`
                 : `Low Blood Glucose: ${value} mg/dL (Level 1)`}
             </h3>
-            <p className="mt-1 text-sm text-slate-600">
+            <p className="mt-1 text-xs sm:text-sm text-[#4D6B6D] leading-relaxed">
               {isSevere
                 ? 'Your glucose level is critically low. Take fast-acting carbohydrates immediately.'
                 : 'Your glucose reading is below the 70 mg/dL target. Follow the ADA Rule of 15.'}
@@ -94,13 +85,13 @@ export function HypoglycemiaAlertModal({ value, isOpen, onClose }) {
         </div>
 
         {/* Clinical ADA Rule of 15 Protocol Card */}
-        <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
-          <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700">
+        <div className="mt-5 rounded-xl border border-[#EAE3DB] bg-[#F3EDE6]/40 p-4">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-[#195A5F]">
             ADA Rule of 15 Emergency Protocol
           </h4>
-          <ol className="mt-2.5 space-y-2 text-xs text-slate-600">
+          <ol className="mt-2.5 space-y-2 text-xs text-[#0F3336]">
             <li className="flex items-start space-x-2">
-              <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#195A5F] text-[10px] font-bold text-white">
                 1
               </span>
               <span>
@@ -108,7 +99,7 @@ export function HypoglycemiaAlertModal({ value, isOpen, onClose }) {
               </span>
             </li>
             <li className="flex items-start space-x-2">
-              <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#195A5F] text-[10px] font-bold text-white">
                 2
               </span>
               <span>
@@ -116,7 +107,7 @@ export function HypoglycemiaAlertModal({ value, isOpen, onClose }) {
               </span>
             </li>
             <li className="flex items-start space-x-2">
-              <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#195A5F] text-[10px] font-bold text-white">
                 3
               </span>
               <span>
@@ -127,11 +118,11 @@ export function HypoglycemiaAlertModal({ value, isOpen, onClose }) {
         </div>
 
         {/* Interactive 15-Minute Countdown Timer */}
-        <div className="mt-4 flex flex-col items-center justify-center rounded-xl bg-slate-900 p-4 text-white shadow-inner">
-          <div className="text-xs font-medium uppercase tracking-wider text-slate-400">
+        <div className="mt-4 flex flex-col items-center justify-center rounded-xl bg-[#0F292B] border border-[#1F4A4E] p-4 text-white shadow-inner">
+          <div className="text-xs font-semibold uppercase tracking-wider text-[#8FAEB0]">
             15-Minute Absorption Timer
           </div>
-          <div className="my-1 font-mono text-3xl font-extrabold tracking-tight text-white">
+          <div className="my-1.5 font-mono text-3xl sm:text-4xl font-bold tracking-tight text-[#F3EDE6]">
             {formatTime(timeLeft)}
           </div>
           <div className="flex space-x-2 mt-2">
@@ -140,7 +131,7 @@ export function HypoglycemiaAlertModal({ value, isOpen, onClose }) {
                 variant="outline"
                 size="sm"
                 onClick={handleStart}
-                className="bg-white/10 text-white hover:bg-white/20 border-white/20"
+                className="bg-white/10 text-white hover:bg-white/20 border-white/20 text-xs"
               >
                 Start Timer
               </Button>
@@ -149,7 +140,7 @@ export function HypoglycemiaAlertModal({ value, isOpen, onClose }) {
                 variant="outline"
                 size="sm"
                 onClick={handlePause}
-                className="bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border-amber-500/30"
+                className="bg-[#D0976C]/25 text-[#E8BC99] hover:bg-[#D0976C]/35 border-[#D0976C]/40 text-xs"
               >
                 Pause
               </Button>
@@ -158,7 +149,7 @@ export function HypoglycemiaAlertModal({ value, isOpen, onClose }) {
               variant="ghost"
               size="sm"
               onClick={handleReset}
-              className="text-slate-400 hover:text-white"
+              className="text-[#8FAEB0] hover:text-white text-xs"
             >
               Reset
             </Button>
@@ -167,7 +158,7 @@ export function HypoglycemiaAlertModal({ value, isOpen, onClose }) {
 
         {/* Severe Notice Warning */}
         {isSevere && (
-          <div className="mt-3 rounded-lg bg-rose-50 p-2.5 text-xs text-rose-800 border border-rose-200">
+          <div className="mt-3.5 rounded-xl bg-[#FEE2E2]/70 p-3 text-xs text-[#991B1B] border border-[#991B1B]/30">
             ⚠️ <strong>Medical Emergency:</strong> If you feel confused, faint, or cannot swallow, call emergency services (911/112) or have someone administer emergency glucagon immediately.
           </div>
         )}
@@ -176,8 +167,10 @@ export function HypoglycemiaAlertModal({ value, isOpen, onClose }) {
         <div className="mt-5 flex justify-end">
           <Button
             onClick={onClose}
-            className={`w-full ${
-              isSevere ? 'bg-rose-600 hover:bg-rose-700' : 'bg-slate-900 hover:bg-slate-800'
+            className={`w-full text-sm py-2.5 ${
+              isSevere
+                ? 'bg-[#991B1B] hover:bg-[#7F1D1D] text-white focus-visible:ring-[#991B1B]'
+                : 'bg-[#195A5F] hover:bg-[#14484B] text-white'
             }`}
           >
             I Have Consumed 15g Carbs / Acknowledge
@@ -187,4 +180,3 @@ export function HypoglycemiaAlertModal({ value, isOpen, onClose }) {
     </div>
   );
 }
-

@@ -4,32 +4,33 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    /* Sweety Approved Single Light Brand Identity */
+    --background: 32 30% 93%;          /* #F3EDE6 Warm White Canvas */
+    --foreground: 184 56% 14%;         /* #0F3336 Primary Text */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 0 0% 100%;                 /* #FFFFFF White Content Surface */
+    --card-foreground: 184 56% 14%;    /* #0F3336 Primary Text */
 
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 184 58% 24%;            /* #195A5F Deep Teal */
+    --primary-foreground: 0 0% 100%;   /* #FFFFFF */
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 175 77% 31%;          /* #128B80 Care Teal */
+    --secondary-foreground: 0 0% 100%; /* #FFFFFF */
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 30 22% 89%;               /* #EAE3DB Muted Surface */
+    --muted-foreground: 184 17% 36%;   /* #4D6B6D Muted Text */
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 25 48% 62%;              /* #D0976C Coral Accent */
+    --accent-foreground: 184 56% 14%;  /* #0F3336 */
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 51%;          /* Crimson Alert */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221 83% 53%;
+    --border: 30 22% 89%;              /* #EAE3DB Fine 1px divider */
+    --input: 30 22% 89%;               /* #EAE3DB Input border */
+    --ring: 184 58% 24%;               /* #195A5F Deep Teal focus ring */
 
-    --radius: 0.5rem;
+    --radius: 0.5rem;                  /* 8px */
   }
 }
 
@@ -38,7 +39,38 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased;
-    font-feature-settings: 'rlig' 1, 'calt' 1;
+    @apply bg-background text-foreground antialiased selection:bg-[#128B80]/20 selection:text-foreground;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    min-height: 100vh;
+  }
+}
+
+/* Tabular Numerals for Medical Telemetry Alignment */
+.tabular-nums {
+  font-variant-numeric: tabular-nums lining-nums;
+  -webkit-font-feature-settings: 'tnum' 1, 'lnum' 1;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+
+/* Neutralize browser autofill yellow/blue background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #0F3336 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #FFFFFF inset !important;
+  box-shadow: 0 0 0px 1000px #FFFFFF inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

@@ -8,8 +8,8 @@ export const Input = forwardRef(({ className, type = 'text', error, ...props }, 
       ref={ref}
       aria-invalid={Boolean(error)}
       className={cn(
-        'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-        error && 'border-rose-500 focus-visible:ring-rose-500',
+        'flex h-11 w-full rounded-xl border border-[#EAE3DB] bg-white px-3.5 py-2 text-sm text-[#0F3336] placeholder:text-muted-foreground/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#128B80] focus-visible:border-transparent disabled:cursor-not-allowed disabled:opacity-50',
+        error && 'border-[#991B1B] focus-visible:ring-[#991B1B]',
         className,
       )}
       {...props}
@@ -18,4 +18,3 @@ export const Input = forwardRef(({ className, type = 'text', error, ...props }, 
 });
 
 Input.displayName = 'Input';
-

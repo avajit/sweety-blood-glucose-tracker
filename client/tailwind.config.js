@@ -33,32 +33,53 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        // ADA Clinical Target Palette
+        // Sweety Approved Brand Identity (Fixed Single Theme)
+        brand: {
+          deep: '#195A5F',       // Primary actions, headings, active pills
+          care: '#128B80',       // Interactive highlights, secondary accents
+          coral: '#D0976C',      // Small decorative accents, high glucose tint
+          warm: '#F3EDE6',       // Main page canvas background
+          white: '#FFFFFF',      // Main content surfaces
+          muted: '#EAE3DB',      // Secondary groupings, dividers, borders
+          text: '#0F3336',       // Headings and primary text
+          textMuted: '#4D6B6D',  // Secondary labels and metadata
+        },
+        // Accessible Clinical Status Palette
         clinical: {
-          target: '#10B981',
-          targetLight: '#ECFDF5',
-          targetText: '#047857',
-          low: '#F59E0B',
-          lowLight: '#FFFBEB',
-          lowText: '#B45309',
-          critical: '#E11D48',
-          criticalLight: '#FFF1F2',
-          criticalText: '#BE123C',
-          high: '#F97316',
-          highLight: '#FFF7ED',
-          highText: '#C2410C',
-          severe: '#7C3AED',
-          severeLight: '#F5F3FF',
-          severeText: '#6D28D9',
+          target: '#1B6B2E',
+          targetBg: '#EBF7EE',
+          low: '#92400E',
+          lowBg: '#FEF3C7',
+          critical: '#991B1B',
+          criticalBg: '#FEE2E2',
+          high: '#9A3412',
+          highBg: '#FFEDD5',
         },
       },
+      fontFamily: {
+        serif: ['Georgia', '"Source Serif 4"', 'serif'],
+        sans: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
+          '"Helvetica Neue"',
+          'Arial',
+          'sans-serif',
+        ],
+      },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        lg: '8px',
+        md: '6px',
+        sm: '4px',
+        xl: '12px',
+        pill: '9999px',
+      },
+      boxShadow: {
+        subtle: '0 1px 3px 0 rgba(25, 90, 95, 0.05), 0 1px 2px -1px rgba(25, 90, 95, 0.05)',
+        card: '0 2px 6px 0 rgba(25, 90, 95, 0.04)',
       },
     },
   },
   plugins: [],
 };
-

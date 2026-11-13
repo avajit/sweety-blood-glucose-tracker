@@ -1,4 +1,4 @@
-import webPush from 'web-push';
+import * as webPush from 'web-push';
 import { env } from '../../config/env.js';
 import { logger } from '../../lib/logger.js';
 import { pushSubscriptionStore as defaultStore } from './push.store.js';

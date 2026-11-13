@@ -6,7 +6,7 @@ import { getRedisClient } from './lib/redis.js';
 
 const app = createApp();
 
-const server = app.listen(env.PORT, () => {
+const server = app.listen(env.PORT, '0.0.0.0', () => {
   logger.info(`🚀 Sweety API server running on port ${env.PORT} in ${env.NODE_ENV} mode`);
   logger.info(`Allowed Client Origin: ${env.CLIENT_ORIGIN}`);
 });

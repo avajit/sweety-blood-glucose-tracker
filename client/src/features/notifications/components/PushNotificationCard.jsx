@@ -19,7 +19,6 @@ export function PushNotificationCard() {
       return;
     }
 
-    // Check if browser already has an active push subscription
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.ready
         .then((reg) => reg.pushManager.getSubscription())
@@ -41,13 +40,8 @@ export function PushNotificationCard() {
       setError(null);
       setMessage(null);
 
-      // 1. Fetch backend VAPID public key
       const publicKey = await getVapidPublicKey();
-
-      // 2. Request browser permission and create push subscription via service worker
       const sub = await subscribeToPush(publicKey);
-
-      // 3. Register subscription with backend
       await subscribePush(sub.toJSON ? sub.toJSON() : sub);
 
       setIsSubscribed(true);
@@ -98,13 +92,17 @@ export function PushNotificationCard() {
 
   if (!supported) {
     return (
-      <Card className="border-slate-200 bg-slate-50/50">
+      <Card className="border-[#EAE3DB] bg-white">
         <CardHeader className="p-4 sm:p-5">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-base text-slate-800">Browser Push Reminders</CardTitle>
-            <Badge variant="outline" className="text-xs text-slate-500">Not Supported</Badge>
+            <CardTitle className="text-sm font-semibold text-[#0F3336]">
+              Browser Push Reminders
+            </CardTitle>
+            <Badge variant="outline" className="text-xs">
+              Not Supported
+            </Badge>
           </div>
-          <CardDescription className="text-xs text-slate-500">
+          <CardDescription className="text-xs text-[#4D6B6D] mt-1">
             Push notifications are not supported in this browser environment.
           </CardDescription>
         </CardHeader>
@@ -113,31 +111,52 @@ export function PushNotificationCard() {
   }
 
   return (
-    <Card className="border-indigo-100 bg-gradient-to-br from-white to-indigo-50/30">
+    <Card className="border-[#EAE3DB] bg-white">
       <CardHeader className="p-4 sm:p-5 pb-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center space-x-2">
-            <span className="text-lg" role="img" aria-label="bell">🔔</span>
-            <CardTitle className="text-base text-slate-900">Daily Glucose Reminders</CardTitle>
+          <div className="flex items-center space-x-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#195A5F]/10 text-[#195A5F]">
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+              >
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              </svg>
+            </div>
+            <CardTitle className="text-base font-serif font-bold text-[#0F3336]">
+              Daily Glucose Reminders
+            </CardTitle>
           </div>
-          <Badge variant={isSubscribed ? 'success' : 'outline'} className="text-xs">
+          <Badge variant={isSubscribed ? 'target' : 'outline'} className="text-xs">
             {isSubscribed ? 'Active' : 'Disabled'}
           </Badge>
         </div>
-        <CardDescription className="text-xs text-slate-600 mt-1">
+        <CardDescription className="text-xs text-[#4D6B6D] mt-1.5">
           Receive browser push notifications when daily meal slot readings are missing.
         </CardDescription>
       </CardHeader>
 
       <CardContent className="p-4 sm:p-5 pt-0 space-y-3">
         {error && (
-          <div role="alert" className="rounded-md border border-rose-200 bg-rose-50 p-2.5 text-xs text-rose-800">
+          <div
+            role="alert"
+            className="rounded-xl border border-[#991B1B]/30 bg-[#FEE2E2]/60 p-2.5 text-xs text-[#991B1B]"
+          >
             {error}
           </div>
         )}
 
         {message && (
-          <div role="status" className="rounded-md border border-emerald-200 bg-emerald-50 p-2.5 text-xs text-emerald-800">
+          <div
+            role="status"
+            className="rounded-xl border border-[#128B80]/30 bg-[#128B80]/10 p-2.5 text-xs text-[#195A5F]"
+          >
             {message}
           </div>
         )}
@@ -149,7 +168,7 @@ export function PushNotificationCard() {
               onClick={handleEnablePush}
               isLoading={isLoading}
               disabled={isLoading}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white"
+              className="text-xs"
             >
               Enable Push Reminders
             </Button>
@@ -161,6 +180,7 @@ export function PushNotificationCard() {
                 onClick={handleSendTest}
                 isLoading={isLoading}
                 disabled={isLoading}
+                className="text-xs"
               >
                 Send Test Notification
               </Button>
@@ -170,7 +190,7 @@ export function PushNotificationCard() {
                 onClick={handleDisablePush}
                 isLoading={isLoading}
                 disabled={isLoading}
-                className="text-slate-500 hover:text-slate-700"
+                className="text-xs text-[#4D6B6D] hover:text-[#991B1B]"
               >
                 Disable
               </Button>
@@ -181,4 +201,3 @@ export function PushNotificationCard() {
     </Card>
   );
 }
-

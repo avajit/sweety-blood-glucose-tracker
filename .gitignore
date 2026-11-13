@@ -60,8 +60,8 @@ desktop.ini
 *.swo
 *~
 
-# AI agent instructions & scaffolding prompts (not needed in public codebase)
-SWEETY_CLAUDE_SCAFFOLDING_PROMPT.md
-CLAUDE.md
+# Local developer notes and workspace overrides
+*.local.md
 GEMINI.md
 .gemini/
+.claude/
