@@ -92,24 +92,44 @@ export function PushNotificationCard() {
         // Fallback to local ServiceWorker display if network push broker is restricted
       }
 
-      // Always show immediate native notification via Service Worker / Notification API
-      if ('serviceWorker' in navigator) {
-        const reg = await navigator.serviceWorker.ready;
-        if (reg && reg.showNotification) {
-          await reg.showNotification('🔔 Sweety Test Alert', {
-            body: 'Your blood glucose push notification pipeline is active and working!',
-            icon: '/favicon.svg',
-            badge: '/favicon.svg',
-            tag: 'sweety-test-alert',
-          });
+      let showedNative = false;
+
+      // Only attempt OS-level notification if browser permission is explicitly granted
+      if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+        try {
+          if ('serviceWorker' in navigator) {
+            const reg = await navigator.serviceWorker.ready;
+            if (reg && reg.showNotification) {
+              await reg.showNotification('🔔 Sweety Daily Reminder', {
+                body: 'Please remember to log your remaining blood glucose readings today!',
+                icon: '/favicon.svg',
+                badge: '/favicon.svg',
+                tag: 'sweety-test-alert',
+              });
+              showedNative = true;
+            }
+          }
+        } catch {
+          // Native display failed, fall back to in-app notification
         }
-      } else if (typeof Notification !== 'undefined') {
-        new Notification('🔔 Sweety Test Alert', {
-          body: 'Your blood glucose push notification pipeline is active and working!',
-        });
+
+        if (!showedNative) {
+          try {
+            new Notification('🔔 Sweety Daily Reminder', {
+              body: 'Please remember to log your remaining blood glucose readings today!',
+            });
+            showedNative = true;
+          } catch {
+            // Fall back to in-app notification
+          }
+        }
       }
 
-      setMessage('Test alert dispatched! Check the bottom-right corner of your screen.');
+      if (showedNative) {
+        setMessage('🔔 Test alert dispatched! Check the bottom-right corner of your screen.');
+      } else {
+        setMessage('🔔 Test reminder simulated: "Dear Demo Patient, please remember to log your remaining blood glucose readings today!"');
+      }
     } catch (err) {
       setError(err.message || 'Failed to send test push alert.');
     } finally {
