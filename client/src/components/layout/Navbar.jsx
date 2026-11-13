@@ -86,6 +86,7 @@ export function Navbar() {
                 onClick={handleLogout}
                 isLoading={isLoggingOut}
                 aria-label="Log out"
+                className="hidden sm:inline-flex"
               >
                 Logout
               </Button>

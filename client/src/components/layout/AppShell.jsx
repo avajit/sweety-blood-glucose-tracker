@@ -11,7 +11,7 @@ export function AppShell({ children }) {
   return (
     <div className="flex min-h-screen flex-col bg-[#F3EDE6] text-[#0F3336]">
       <Navbar />
-      <main className="flex-1 pb-24 md:pb-16 pt-6 sm:pt-8">
+      <main className="flex-1 pb-28 md:pb-16 pt-6 sm:pt-8">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <ErrorBoundary>{children ? children : <Outlet />}</ErrorBoundary>
         </div>

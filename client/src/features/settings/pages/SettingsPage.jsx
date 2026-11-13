@@ -50,17 +50,18 @@ export default function SettingsPage() {
       <PushNotificationCard />
 
       {/* Sign Out Card */}
-      <Card className="border-[#FECACA] bg-white">
+      <Card className="border-[#EAE3DB] bg-white">
         <CardContent className="p-5 sm:p-6 flex items-center justify-between">
           <div>
             <h4 className="text-sm font-semibold text-[#0F3336]">Session Control</h4>
             <p className="text-xs text-[#4D6B6D] mt-0.5">Safely terminate your authenticated session on this device</p>
           </div>
           <Button
-            variant="destructive"
+            variant="outline"
             size="sm"
             onClick={logout}
             isLoading={isLoggingOut}
+            className="text-[#991B1B] border-[#991B1B]/30 hover:bg-[#FEE2E2]/40 hover:text-[#7F1D1D] shrink-0"
           >
             <LogoutIcon className="mr-1.5 h-4 w-4" />
             Log Out
