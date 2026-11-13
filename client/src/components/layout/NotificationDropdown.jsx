@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../features/auth/context/AuthContext.jsx';
 import { useReadings } from '../../features/readings/hooks/useReadings.js';
 import { ROLES } from '@sweety/shared/constants/roles.js';
+import { SLOT_VALUES, SLOT_LABELS } from '@sweety/shared/constants/slots.js';
 import { todayInTimezone } from '@sweety/shared/utils/date.js';
 import { BellIcon, ClockIcon, CheckIcon, PlusIcon, SettingsIcon } from '../icons/index.jsx';
 
 export function NotificationDropdown() {
   const { user, isAuthenticated } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
   const containerRef = useRef(null);
 
   // Close dropdown when clicking outside
@@ -57,23 +59,63 @@ export function NotificationDropdown() {
   const pendingCount = isPatient ? Math.max(0, 4 - countToday) : 0;
   const hasUnread = pendingCount > 0;
 
+  // Determine specific missing meal slots for today
+  const loggedSlotSet = new Set(todayReadings.map((r) => r.slot));
+  const missingSlots = SLOT_VALUES.filter((s) => !loggedSlotSet.has(s));
+  const missingSlotText = missingSlots.map((s) => SLOT_LABELS[s] || s).join(', ');
+
+  // Check if user previously marked this day's reminders as read
+  useEffect(() => {
+    try {
+      const storageKey = `sweety_read_reminders_${today}`;
+      const savedCount = localStorage.getItem(storageKey);
+      if (savedCount !== null && Number(savedCount) === pendingCount) {
+        setIsDismissed(true);
+      } else {
+        setIsDismissed(false);
+      }
+    } catch {
+      // Ignore localStorage errors in sandbox / restricted environments
+    }
+  }, [today, pendingCount]);
+
+  const markAsRead = () => {
+    setIsDismissed(true);
+    try {
+      localStorage.setItem(`sweety_read_reminders_${today}`, String(pendingCount));
+    } catch {
+      // Ignore
+    }
+  };
+
+  const handleToggle = () => {
+    const nextOpen = !isOpen;
+    setIsOpen(nextOpen);
+    if (nextOpen && !isDismissed) {
+      markAsRead();
+    }
+  };
+
   if (!isAuthenticated) {
     return null;
   }
+
+  // Only show red badge on the bell if user has not yet opened/viewed today's pending slots
+  const showBadge = hasUnread && !isDismissed;
 
   return (
     <div className="relative inline-block text-left" ref={containerRef}>
       {/* Bell Action Button */}
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggle}
         className="relative p-2 rounded-full text-[#4D6B6D] hover:text-[#0F3336] hover:bg-[#EAE3DB]/50 transition-colors focus:outline-none focus:ring-2 focus:ring-[#195A5F]"
         aria-label="View notifications and reminders"
         aria-expanded={isOpen}
       >
         <BellIcon className="h-5 w-5" />
         {/* Unread Indicator Badge */}
-        {hasUnread && (
+        {showBadge && (
           <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#D0976C] text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
             {pendingCount}
           </span>
@@ -97,15 +139,17 @@ export function NotificationDropdown() {
                 Daily reminder schedule & clinical alerts
               </p>
             </div>
-            {hasUnread ? (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#D0976C]/20 text-[#8C5832]">
-                {pendingCount} pending
-              </span>
-            ) : (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#128B80]/15 text-[#195A5F]">
-                All caught up
-              </span>
-            )}
+            <div className="flex items-center space-x-2">
+              {hasUnread ? (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#D0976C]/20 text-[#8C5832]">
+                  {pendingCount} pending
+                </span>
+              ) : (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#128B80]/15 text-[#195A5F]">
+                  All caught up
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Notification Items List */}
@@ -136,11 +180,11 @@ export function NotificationDropdown() {
                     </div>
                     <p className="text-xs text-[#4D6B6D] mt-0.5">
                       {hasUnread
-                        ? `You have logged ${countToday}/4 readings today. Please log your remaining ${pendingCount} slot(s).`
+                        ? `You have logged ${countToday}/4 readings today. Missing slot: ${missingSlotText || `${pendingCount} remaining`}.`
                         : 'Great adherence! All 4 daily blood glucose meal slots are recorded.'}
                     </p>
                     {hasUnread && (
-                      <div className="mt-2">
+                      <div className="mt-2.5 flex items-center space-x-3">
                         <Link
                           to="/dashboard"
                           onClick={() => setIsOpen(false)}

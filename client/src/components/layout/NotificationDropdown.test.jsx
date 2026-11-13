@@ -173,5 +173,32 @@ describe('NotificationDropdown Component', () => {
     expect(screen.queryByText(/pending meal slot readings/i)).not.toBeInTheDocument();
     expect(screen.getByText(/automated reminders active/i)).toBeInTheDocument();
   });
+
+  it('clears unread badge from bell icon once patient opens the dropdown', async () => {
+    const user = userEvent.setup();
+    vi.spyOn(authContext, 'useAuth').mockReturnValue({
+      user: { id: 'p1', name: 'Demo Patient', role: ROLES.PATIENT },
+      isAuthenticated: true,
+    });
+    vi.spyOn(useReadingsHook, 'useReadings').mockReturnValue({
+      data: {
+        data: [
+          { id: '1', readingDate: '2026-11-13T08:00:00Z', slot: 'MORNING_FASTING', value: 95 },
+        ],
+      },
+    });
+
+    renderDropdown();
+
+    const bellBtn = screen.getByRole('button', { name: /view notifications/i });
+    // Before click: badge with 3 is visible
+    expect(screen.getByText('3')).toBeInTheDocument();
+
+    // Click to open
+    await user.click(bellBtn);
+
+    // After opening, the badge on the bell icon is dismissed (marked as seen)
+    expect(screen.queryByText('3')).not.toBeInTheDocument();
+  });
 });
 
