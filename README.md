@@ -329,20 +329,29 @@ npm run test -w server
 # Run client component & MSW form tests
 npm run test -w client
 
+# Run shared schemas & pure date math tests
+npm run test -w shared
+
 # Run code style & lint checks
 npm run lint
 ```
 
-### Test Coverage Highlights:
-- **Server (21 Test Files, 139 Tests):**
+### Test Suite Highlights (276 Automated Tests Passing Across 44 Test Files):
+- **Server (25 Test Files, 168 Tests):**
   - Concurrency checks verifying that duplicate slots and 5th daily readings are rejected inside transactions.
   - Ownership enforcement ensuring patients cannot read, modify, or delete another patient's data.
   - Doctor access policies verifying linked patient access (200) vs unlinked patient access (403).
   - Exact Origin CSRF header validation across mutating methods (POST/PATCH/DELETE).
-  - Timezone-aware date calculations and clinical report aggregation logic.
-- **Client (10 Test Files, 27 Tests):**
+  - Timezone-aware date calculations, BullMQ reminder worker, and clinical report aggregation logic.
+  - Redis report query caching and automated multi-key mutation invalidation.
+- **Client (15 Test Files, 64 Tests):**
   - MSW 2 network interception testing invalid glucose inputs, future dates, daily limits, and API error states.
   - Accessible form labeling, navigation, authentication state transitions, and responsive chart fallbacks.
+  - Interactive Notification Dropdown with real-time pending slot count, unread badge auto-clearing, and doctor view guard.
+  - Push notification card permission states and graceful in-app toast fallbacks.
+- **Shared (4 Test Files, 44 Tests):**
+  - Zod request schemas (auth, reading entry, pagination, clinical report date ranges).
+  - Pure localized date arithmetic, month boundary calculations, and ADA clinical target range evaluations.
 
 ---
 
