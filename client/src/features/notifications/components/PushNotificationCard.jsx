@@ -48,7 +48,11 @@ export function PushNotificationCard() {
       setCurrentSubscription(sub);
       setMessage('Push notifications enabled! You will receive daily reminders.');
     } catch (err) {
-      setError(err.message || 'Failed to enable push notifications.');
+      if (typeof Notification !== 'undefined' && Notification.permission === 'denied') {
+        setError("Notification permission was blocked in your browser. Click the site settings icon on the left of your address bar (next to localhost:5173), switch Notifications to 'Allow', and refresh.");
+      } else {
+        setError(err.message || 'Failed to enable push notifications.');
+      }
     } finally {
       setIsLoading(false);
     }
