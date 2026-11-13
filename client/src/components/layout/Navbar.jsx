@@ -5,6 +5,7 @@ import { ROLES } from '@sweety/shared/constants/roles.js';
 import { Badge } from '../ui/Badge.jsx';
 import { Button } from '../ui/Button.jsx';
 import { SweetyBrandmark } from '../icons/index.jsx';
+import { NotificationDropdown } from './NotificationDropdown.jsx';
 
 export function Navbar() {
   const { user, isAuthenticated, logout, isLoggingOut } = useAuth();
@@ -66,9 +67,12 @@ export function Navbar() {
         </div>
 
         {/* Right Section: User Profile & Actions */}
-        <div className="flex items-center space-x-3 sm:space-x-4">
+        <div className="flex items-center space-x-2.5 sm:space-x-4">
           {isAuthenticated ? (
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              {/* Notification Bell with Dynamic Unread Badge */}
+              <NotificationDropdown />
+
               <div className="hidden sm:flex flex-col items-end">
                 <span className="text-sm font-semibold text-[#0F3336] leading-none">
                   {user?.name}

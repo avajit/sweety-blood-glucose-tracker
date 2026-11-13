@@ -6,10 +6,11 @@ import { queryKeys } from '../../../api/queryKeys.js';
  * Hook to fetch paginated readings with filters.
  * @param {object} [params]
  */
-export function useReadings(params = {}) {
+export function useReadings(params = {}, options = {}) {
   return useQuery({
     queryKey: queryKeys.readings.list(params),
     queryFn: () => getReadings(params),
     staleTime: 60 * 1000,
+    ...options,
   });
 }
