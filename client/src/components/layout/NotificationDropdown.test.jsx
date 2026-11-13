@@ -174,3 +174,4 @@ describe('NotificationDropdown Component', () => {
     expect(screen.getByText(/automated reminders active/i)).toBeInTheDocument();
   });
 });
+
