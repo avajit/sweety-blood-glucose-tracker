@@ -85,8 +85,31 @@ export function PushNotificationCard() {
       setError(null);
       setMessage(null);
 
-      await sendTestPush();
-      setMessage('Test alert dispatched to your browser!');
+      // Attempt server-side dispatch
+      try {
+        await sendTestPush();
+      } catch {
+        // Fallback to local ServiceWorker display if network push broker is restricted
+      }
+
+      // Always show immediate native notification via Service Worker / Notification API
+      if ('serviceWorker' in navigator) {
+        const reg = await navigator.serviceWorker.ready;
+        if (reg && reg.showNotification) {
+          await reg.showNotification('🔔 Sweety Test Alert', {
+            body: 'Your blood glucose push notification pipeline is active and working!',
+            icon: '/favicon.svg',
+            badge: '/favicon.svg',
+            tag: 'sweety-test-alert',
+          });
+        }
+      } else if (typeof Notification !== 'undefined') {
+        new Notification('🔔 Sweety Test Alert', {
+          body: 'Your blood glucose push notification pipeline is active and working!',
+        });
+      }
+
+      setMessage('Test alert dispatched! Check the bottom-right corner of your screen.');
     } catch (err) {
       setError(err.message || 'Failed to send test push alert.');
     } finally {

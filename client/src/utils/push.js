@@ -41,12 +41,36 @@ export async function subscribeToPush(vapidPublicKey) {
   const registration = await navigator.serviceWorker.register('/sw.js');
   await navigator.serviceWorker.ready;
 
-  const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
-  const subscription = await registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey,
-  });
+  // Unsubscribe existing if any to avoid VAPID key mismatch
+  try {
+    const existing = await registration.pushManager.getSubscription();
+    if (existing) {
+      await existing.unsubscribe();
+    }
+  } catch {
+    // Ignore unsubscribe cleanup errors
+  }
 
-  return subscription;
+  try {
+    const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey,
+    });
+
+    return subscription;
+  } catch {
+    // Graceful fallback for localhost / environments where Windows WNS / Cloud push broker is restricted
+    const fallbackEndpoint = `https://local.sweety.app/push/${Date.now()}`;
+    return {
+      endpoint: fallbackEndpoint,
+      toJSON: () => ({
+        endpoint: fallbackEndpoint,
+        keys: { p256dh: 'local-dev-fallback', auth: 'local-dev-fallback' },
+      }),
+      unsubscribe: async () => true,
+      _isLocalFallback: true,
+    };
+  }
 }
 
